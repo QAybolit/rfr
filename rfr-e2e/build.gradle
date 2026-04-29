@@ -19,9 +19,9 @@ buildscript {
         wiremockVersion = '3.13.2'
         ashotVersion = '1.5.4'
         fakerVersion = '1.0.2'
-//        userdataWsdlUrl = System.getProperty("test.env") == "docker"
-//                ? "http://userdata.niffler.dc:8089/ws/userdata.wsdl"
-//                : "http://localhost:8089/ws/userdata.wsdl"
+        userdataWsdlUrl = System.getProperty("test.env") == "docker"
+                ? "http://userdata.niffler.dc:8089/ws/userdata.wsdl"
+                : "http://localhost:8089/ws/userdata.wsdl"
     }
 }
 
@@ -60,6 +60,7 @@ dependencies {
     testImplementation "org.springframework.data:spring-data-commons:${springDataCommonsVersion}"
     // DB
     testImplementation "org.springframework:spring-jdbc:${springJdbcVersion}"
+    testImplementation "mysql:mysql-connector-java:${project.ext.mysqlDriverVersion}"
     testImplementation "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
     testImplementation "p6spy:p6spy:${p6spyVersion}"
     testImplementation "org.hibernate:hibernate-core:${hibernateVersion}"
@@ -115,6 +116,12 @@ tasks.register('printVersion') {
     }
 }
 
-test {
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
+    systemProperties(System.getProperties())
+
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+        exceptionFormat "full"
+    }
 }
