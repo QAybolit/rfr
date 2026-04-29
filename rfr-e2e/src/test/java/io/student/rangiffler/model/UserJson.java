@@ -10,6 +10,14 @@ public record UserJson(
         @JsonProperty("username")
         String username,
         @JsonProperty("password")
-        String password
+        String password,
+        @JsonProperty("enabled")
+        boolean enabled,
+        @JsonProperty("account_non_expired")
+        boolean accountNonExpired,
+        @JsonProperty("account_non_locked")
+        boolean accountNonLocked,
+        @JsonProperty("credentials_non_expired")
+        boolean credentialsNonExpired
 ) {
 }

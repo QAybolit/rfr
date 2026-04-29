@@ -8,9 +8,9 @@ public interface Config {
 
     String frontUrl();
 
-    String spendUrl();
+    String registerUrl();
 
-    String spendJdbcUrl();
+    String registerJdbcUrl();
 
     String dbUsername();
 

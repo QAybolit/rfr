@@ -1,0 +1,36 @@
+package io.student.rangiffler.service;
+
+import io.student.rangiffler.api.RegisterApi;
+import io.student.rangiffler.config.Config;
+import io.student.rangiffler.model.UserJson;
+import org.junit.jupiter.api.Assertions;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import java.io.IOException;
+
+public class UserApiClient implements UserClient {
+
+    private static final Config CONFIG = Config.getInstance();
+
+    private final Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl(CONFIG.registerUrl())
+            .addConverterFactory(JacksonConverterFactory.create())
+            .build();
+
+    private final RegisterApi registerApi = retrofit.create(RegisterApi.class);
+
+    @Override
+    public UserJson registerUser(UserJson user) {
+        try {
+            Response<UserJson> response = registerApi.registerUser(user).execute();
+            Assertions.assertEquals(201, response.code());
+            return response.body();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+}

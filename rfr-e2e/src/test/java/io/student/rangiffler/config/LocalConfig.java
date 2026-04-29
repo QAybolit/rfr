@@ -10,12 +10,12 @@ public enum LocalConfig implements Config {
     }
 
     @Override
-    public String spendUrl() {
+    public String registerUrl() {
         return "http://localhost:9001";
     }
 
     @Override
-    public String spendJdbcUrl() {
+    public String registerJdbcUrl() {
         return "jdbc:mysql://localhost:3306/rangiffler-auth";
     }
 
