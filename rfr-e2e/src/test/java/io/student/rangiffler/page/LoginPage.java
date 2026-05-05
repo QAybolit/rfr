@@ -54,8 +54,8 @@ public class LoginPage {
     }
 
     @Step("Check form error is displayed")
-    public MainPage checkFormError(String errorText) {
+    public LoginPage checkFormError(String errorText) {
         this.formError.shouldBe(visible).shouldHave(text(errorText));
-        return new MainPage();
+        return this;
     }
 }

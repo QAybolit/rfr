@@ -1,9 +1,9 @@
-package io.student.rangiffler.jupiter.extention;
+package io.student.rangiffler.jupiter.extension;
 
 import io.student.rangiffler.jupiter.annotation.User;
 import io.student.rangiffler.model.UserJson;
-import io.student.rangiffler.service.UserClient;
-import io.student.rangiffler.service.UserDbClient;
+import io.student.rangiffler.service.UsersClient;
+import io.student.rangiffler.service.UsersDbClient;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -17,7 +17,7 @@ import static io.student.rangiffler.utils.DataUtils.getRandomPassword;
 public class UserExtension implements BeforeEachCallback, ParameterResolver {
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UserExtension.class);
-    private final UserClient userClient = new UserDbClient();
+    private final UsersClient usersClient = new UsersDbClient();
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
@@ -35,7 +35,7 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
                             true,
                             true
                     );
-                    UserJson createdUser = userClient.registerUser(user);
+                    UserJson createdUser = usersClient.registerUser(user);
                     context.getStore(NAMESPACE)
                             .put(context.getUniqueId(), createdUser);
                 }
@@ -44,9 +44,8 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return parameterContext.getParameter()
-                .getType()
-                .isAssignableFrom(UserJson.class);
+        return UserJson.class.isAssignableFrom(parameterContext.getParameter().getType())
+                && AnnotationSupport.isAnnotated(extensionContext.getRequiredTestMethod(), User.class);
     }
 
     @Override

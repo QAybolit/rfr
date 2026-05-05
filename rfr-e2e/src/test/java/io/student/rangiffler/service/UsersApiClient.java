@@ -3,14 +3,13 @@ package io.student.rangiffler.service;
 import io.student.rangiffler.api.RegisterApi;
 import io.student.rangiffler.config.Config;
 import io.student.rangiffler.model.UserJson;
-import org.junit.jupiter.api.Assertions;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
 
-public class UserApiClient implements UserClient {
+public class UsersApiClient implements UsersClient {
 
     private static final Config CONFIG = Config.getInstance();
 
@@ -25,7 +24,8 @@ public class UserApiClient implements UserClient {
     public UserJson registerUser(UserJson user) {
         try {
             Response<UserJson> response = registerApi.registerUser(user).execute();
-            Assertions.assertEquals(201, response.code());
+            if (response.code() != 201) throw new RuntimeException("Error registering user");
+
             return response.body();
 
         } catch (IOException e) {

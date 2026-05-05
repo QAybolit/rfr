@@ -11,29 +11,29 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.UUID;
 
-public class UserDbClient implements UserClient {
+public class UsersDbClient implements UsersClient {
 
     private static final Config CONFIG = Config.getInstance();
+
     private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    private final JdbcTemplate jdbcTemplate = new JdbcTemplate(
+            new SingleConnectionDataSource(
+                    CONFIG.registerJdbcUrl(),
+                    CONFIG.dbUsername(),
+                    CONFIG.dbPassword(),
+                    true
+            )
+    );
 
     @Override
     public UserJson registerUser(UserJson user) {
-        final JdbcTemplate jdbcTemplate = new JdbcTemplate(
-                new SingleConnectionDataSource(
-                        CONFIG.registerJdbcUrl(),
-                        CONFIG.dbUsername(),
-                        CONFIG.dbPassword(),
-                        false
-                )
-        );
-
         final UUID uuid = UUID.randomUUID();
 
         jdbcTemplate.update(
                 connection -> {
                     PreparedStatement ps = connection.prepareStatement(
                             """
-                                    INSERT INTO user (id, username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) VALUES (UUID_TO_BIN(?, true),?, ?, ?, ?, ?, ?)
+                                    INSERT INTO `user` (id, username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) VALUES (UUID_TO_BIN(?, true),?, ?, ?, ?, ?, ?)
                                     """,
                             Statement.RETURN_GENERATED_KEYS
                     );

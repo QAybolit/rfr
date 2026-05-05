@@ -5,14 +5,15 @@ import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$x;
 
 public class EnterPage {
 
     private final SelenideElement logo = $(".landing__logo");
     private final SelenideElement header = $("h2");
     private final SelenideElement mainImage = $(".landing__hero");
-    private final SelenideElement loginButton = $("button.MuiButton-contained");
-    private final SelenideElement registerButton = $("a.MuiButton-outlinedSizeMedium");
+    private final SelenideElement loginButton = $x("//button[text()='Login']");
+    private final SelenideElement registerButton = $x("//a[text()='Register']");
 
     @Step("Validate Enter Page elements")
     public EnterPage validateEnterPage() {
