@@ -28,6 +28,10 @@ subprojects {
         lombokVersion = '1.18.42'
         mysqlDriverVersion = '8.0.33'
         flywayVersion = '12.0.0'
+        postgresDriverVersion = '42.7.8'
+        grpcVersion = '1.75.0'
+        protobufVersion = '4.32.0'
+        jakartaJaxbVersion = '4.0.2'
     }
 
     dependencyManagement {
