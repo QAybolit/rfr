@@ -4,6 +4,7 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
+import static com.codeborne.selenide.CollectionCondition.anyMatch;
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
@@ -29,10 +30,11 @@ public class SearchPeoplePage extends BasePage {
         return this;
     }
 
-    @Step("Check friends list is not empty")
-    public SearchPeoplePage checkFriendsListIsNotEmpty() {
+    @Step("Check friends list contains {}")
+    public SearchPeoplePage checkFriendsListContainsName(String name) {
         this.friendsTab.click();
         this.friendsList.shouldHave(sizeGreaterThan(0));
+        this.friendsList.shouldHave(anyMatch("List contains name " + name, e -> e.getText().contains(name)));
         return this;
     }
 
@@ -43,10 +45,11 @@ public class SearchPeoplePage extends BasePage {
         return this;
     }
 
-    @Step("Check outcome list is not empty")
-    public SearchPeoplePage checkOutcomeListIsNotEmpty() {
+    @Step("Check outcome list contains {}")
+    public SearchPeoplePage checkOutcomeListContainsName(String name) {
         this.outcomeInvitationsTab.click();
         this.outcomeList.shouldHave(sizeGreaterThan(0));
+        this.outcomeList.shouldHave(anyMatch("List contains name " + name, e -> e.getText().contains(name)));
         return this;
     }
 
@@ -57,10 +60,11 @@ public class SearchPeoplePage extends BasePage {
         return this;
     }
 
-    @Step("Check income list is not empty")
-    public SearchPeoplePage checkIncomeListIsNotEmpty() {
+    @Step("Check income list contains {}")
+    public SearchPeoplePage checkIncomeListContainsName(String name) {
         this.incomeInvitationsTab.click();
         this.incomeList.shouldHave(sizeGreaterThan(0));
+        this.incomeList.shouldHave(anyMatch("List contains name " + name, e -> e.getText().contains(name)));
         return this;
     }
 }

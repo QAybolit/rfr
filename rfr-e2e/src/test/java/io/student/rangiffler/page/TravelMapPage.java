@@ -17,8 +17,8 @@ public class TravelMapPage extends BasePage {
     private final SelenideElement previousButton = $x("//button[text()='Previous']");
     private final SelenideElement nextButton = $x("//button[text()='Next']");
 
-    @Step("Validate Main Page elements")
-    public TravelMapPage validateMainPage() {
+    @Step("Validate Travel Map Page elements")
+    public TravelMapPage validateTravelMapPage() {
         this.header.shouldBe(visible);
         this.menuButton.shouldBe(visible);
         this.profileButton.shouldBe(visible);

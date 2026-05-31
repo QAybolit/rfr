@@ -23,7 +23,7 @@ public class LoginTest extends BaseTest {
                 .enterUsername(user.username())
                 .enterPassword(user.password())
                 .submitLoginForm()
-                .validateMainPage();
+                .validateTravelMapPage();
     }
 
     @User
