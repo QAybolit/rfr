@@ -42,9 +42,9 @@ public class LoginPage {
     }
 
     @Step("Submit login form")
-    public MainPage submitLoginForm() {
+    public TravelMapPage submitLoginForm() {
         this.submitButton.click();
-        return new MainPage();
+        return new TravelMapPage();
     }
 
     @Step("Submit login form with bad credentials")

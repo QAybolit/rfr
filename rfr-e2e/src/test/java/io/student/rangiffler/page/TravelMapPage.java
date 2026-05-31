@@ -5,19 +5,20 @@ import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$x;
 
-public class MainPage {
+public class TravelMapPage extends BasePage {
 
-    private final SelenideElement header = $("h1.MuiTypography-root");
-    private final SelenideElement menuButton = $("button[aria-label='open drawer']");
-    private final SelenideElement profileButton = $("[data-testid='AccountCircleRoundedIcon']");
-    private final SelenideElement travelsMapButton = $("[data-testid='PublicRoundedIcon']");
-    private final SelenideElement personSearchButton = $("[data-testid='PersonSearchRoundedIcon']");
+    private final SelenideElement mapTitle = $x("//h2[text()='Travels map']");
     private final SelenideElement worldMapImage = $(".worldmap__figure-container");
-    private final SelenideElement logoutButton = $("[aria-label='Logout']");
+    private final SelenideElement myTravelsButton = $x("//button[text()='Only my travels']");
+    private final SelenideElement withFriendsTravelsButton = $x("//button[text()='With friends']");
+    private final SelenideElement addPhotoButton = $x("//button[text()='Add photo']");
+    private final SelenideElement previousButton = $x("//button[text()='Previous']");
+    private final SelenideElement nextButton = $x("//button[text()='Next']");
 
     @Step("Validate Main Page elements")
-    public MainPage validateMainPage() {
+    public TravelMapPage validateMainPage() {
         this.header.shouldBe(visible);
         this.menuButton.shouldBe(visible);
         this.profileButton.shouldBe(visible);
