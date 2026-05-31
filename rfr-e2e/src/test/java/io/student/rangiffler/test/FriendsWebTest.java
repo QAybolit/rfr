@@ -1,5 +1,7 @@
 package io.student.rangiffler.test;
 
+import io.student.rangiffler.config.Config;
+import io.student.rangiffler.jupiter.extension.BrowserExtension;
 import io.student.rangiffler.jupiter.extension.UsersQueueExtension;
 import io.student.rangiffler.jupiter.extension.UsersQueueExtension.StaticUser;
 import io.student.rangiffler.jupiter.extension.UsersQueueExtension.UserType;
@@ -14,7 +16,10 @@ import static io.student.rangiffler.jupiter.extension.UsersQueueExtension.UserTy
 import static io.student.rangiffler.jupiter.extension.UsersQueueExtension.UserType.Type.WITH_INCOME_REQUEST;
 import static io.student.rangiffler.jupiter.extension.UsersQueueExtension.UserType.Type.WITH_OUTCOME_REQUEST;
 
-public class FriendsWebTest extends BaseTest {
+@ExtendWith(BrowserExtension.class)
+public class FriendsWebTest {
+
+    static final Config CONFIG = Config.getInstance();
 
     @Test
     @ExtendWith(UsersQueueExtension.class)
