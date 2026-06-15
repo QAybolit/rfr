@@ -34,9 +34,13 @@ public class FriendsWebTest {
                 .submitLoginForm()
                 .validateTravelMapPage()
                 .clickPersonSearchButton()
+                .goToIncomeTab()
                 .checkIncomeListIsEmpty()
+                .goToOutcomeTab()
                 .checkOutcomeListIsEmpty()
-                .checkFriendsListContainsName(user.friend());
+                .goToFriendsTab()
+                .checkFriendsListContainsName(user.friend())
+                .checkFriendsListContainsName("Russian Federation");
     }
 
     @Test
@@ -52,8 +56,11 @@ public class FriendsWebTest {
                 .submitLoginForm()
                 .validateTravelMapPage()
                 .clickPersonSearchButton()
+                .goToFriendsTab()
                 .checkFriendsListIsEmpty()
+                .goToIncomeTab()
                 .checkIncomeListIsEmpty()
+                .goToOutcomeTab()
                 .checkOutcomeListIsEmpty();
     }
 
@@ -70,9 +77,15 @@ public class FriendsWebTest {
                 .submitLoginForm()
                 .validateTravelMapPage()
                 .clickPersonSearchButton()
+                .goToFriendsTab()
                 .checkFriendsListIsEmpty()
+                .goToOutcomeTab()
                 .checkOutcomeListIsEmpty()
-                .checkIncomeListContainsName(user.income());
+                .goToIncomeTab()
+                .checkIncomeListContainsText(user.income())
+                .checkIncomeListContainsText("Russian Federation")
+                .checkIncomeListContainsAcceptButtons()
+                .checkIncomeListContainsDeclineButtons();
     }
 
     @Test
@@ -88,8 +101,55 @@ public class FriendsWebTest {
                 .submitLoginForm()
                 .validateTravelMapPage()
                 .clickPersonSearchButton()
+                .goToFriendsTab()
                 .checkFriendsListIsEmpty()
+                .goToIncomeTab()
                 .checkIncomeListIsEmpty()
-                .checkOutcomeListContainsName(user.outcome());
+                .goToOutcomeTab()
+                .checkOutcomeListContainsText(user.outcome())
+                .checkOutcomeListContainsText("Russian Federation")
+                .checkOutcomeListContainsStatus();
+    }
+
+    @Test
+    @ExtendWith(UsersQueueExtension.class)
+    @DisplayName("Outcome invitation be declined by another user")
+    public void outcomeInvitationBeDecline(@UserType(value = WITH_OUTCOME_REQUEST) StaticUser outcomeUser,
+                                           @UserType(value = EMPTY) StaticUser incomeUser) {
+        open(CONFIG.frontUrl(), EnterPage.class)
+                .validateEnterPage()
+                .clickLoginButton()
+                .validateLoginPage()
+                .enterUsername(outcomeUser.username())
+                .enterPassword(outcomeUser.password())
+                .submitLoginForm()
+                .validateTravelMapPage()
+                .clickPersonSearchButton()
+                .goToFriendsTab()
+                .checkFriendsListIsEmpty()
+                .goToIncomeTab()
+                .checkIncomeListIsEmpty()
+                .findPerson(incomeUser.username())
+                .inviteFriend(incomeUser.username())
+                .refreshPage()
+                .goToOutcomeTab()
+                .checkOutcomeListContainsText(incomeUser.username())
+                .clickLogoutButton()
+                .clickLoginButton()
+                .validateLoginPage()
+                .enterUsername(incomeUser.username())
+                .enterPassword(incomeUser.password())
+                .submitLoginForm()
+                .clickPersonSearchButton()
+                .goToFriendsTab()
+                .checkFriendsListIsEmpty()
+                .goToOutcomeTab()
+                .checkOutcomeListIsEmpty()
+                .goToIncomeTab()
+                .checkIncomeListContainsText(outcomeUser.username())
+                .clickDeclineButtonAtFirstRow()
+                .refreshPage()
+                .goToIncomeTab()
+                .checkIncomeListIsEmpty();
     }
 }

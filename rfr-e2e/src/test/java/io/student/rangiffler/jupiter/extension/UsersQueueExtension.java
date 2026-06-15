@@ -62,7 +62,7 @@ public class UsersQueueExtension implements BeforeEachCallback, AfterEachCallbac
 
     @SuppressWarnings("unchecked")
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(ExtensionContext context) {
         Arrays.stream(context.getRequiredTestMethod().getParameters())
                 .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
                 .map(p -> p.getAnnotation(UserType.class))
@@ -97,8 +97,8 @@ public class UsersQueueExtension implements BeforeEachCallback, AfterEachCallbac
 
     @SuppressWarnings("unchecked")
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
-        Map<UserType, StaticUser> map = context.getStore(NAMESPACE).get(context.getUniqueId(), Map.class);
+    public void afterEach(ExtensionContext context) {
+        Map<UserType, StaticUser> map = context.getStore(NAMESPACE).remove(context.getUniqueId(), Map.class);
         if (map != null) {
             for (Map.Entry<UserType, StaticUser> entry : map.entrySet()) {
                 addUserToQueue(entry.getKey(), entry.getValue());
