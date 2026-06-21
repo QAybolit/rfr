@@ -1,16 +1,22 @@
 package io.student.rangiffler.test;
 
+import io.student.rangiffler.config.Config;
 import io.student.rangiffler.jupiter.annotation.User;
+import io.student.rangiffler.jupiter.extension.BrowserExtension;
 import io.student.rangiffler.model.UserJson;
 import io.student.rangiffler.page.EnterPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static com.codeborne.selenide.Selenide.open;
 import static io.student.rangiffler.utils.DataUtils.getRandomName;
 import static io.student.rangiffler.utils.DataUtils.getRandomPassword;
 
-public class RegistrationTest extends BaseTest {
+@ExtendWith(BrowserExtension.class)
+public class RegistrationTest {
+
+    static final Config CONFIG = Config.getInstance();
 
     @Test
     @DisplayName("Successful registration of a new user")
