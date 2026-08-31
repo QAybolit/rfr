@@ -21,7 +21,7 @@ public class UsersApiClient implements UsersClient {
     private final RegisterApi registerApi = retrofit.create(RegisterApi.class);
 
     @Override
-    public UserJson registerUser(UserJson user) {
+    public UserJson createUser(UserJson user) {
         try {
             Response<UserJson> response = registerApi.registerUser(user).execute();
             if (response.code() != 201) throw new RuntimeException("Error registering user");

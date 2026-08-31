@@ -4,5 +4,5 @@ import io.student.rangiffler.model.UserJson;
 
 public interface UsersClient {
 
-    UserJson registerUser(UserJson user);
+    UserJson createUser(String username, String password);
 }

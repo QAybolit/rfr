@@ -11,8 +11,8 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import static io.student.rangiffler.utils.DataUtils.getRandomName;
-import static io.student.rangiffler.utils.DataUtils.getRandomPassword;
+import static io.student.rangiffler.utils.FakeDataUtils.getRandomName;
+import static io.student.rangiffler.utils.FakeDataUtils.getRandomPassword;
 
 public class UserExtension implements BeforeEachCallback, ParameterResolver {
 
@@ -30,12 +30,13 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
                             null,
                             getRandomName(),
                             getRandomPassword(),
-                            true,
-                            true,
-                            true,
-                            true
+                            // TODO поправить
+                            "",
+                            "",
+                            "",
+                            null
                     );
-                    UserJson createdUser = usersClient.registerUser(user);
+                    UserJson createdUser = usersClient.createUser(user);
                     context.getStore(NAMESPACE)
                             .put(context.getUniqueId(), createdUser);
                 }

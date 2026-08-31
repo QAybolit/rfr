@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static com.codeborne.selenide.Selenide.open;
-import static io.student.rangiffler.utils.DataUtils.getRandomName;
-import static io.student.rangiffler.utils.DataUtils.getRandomPassword;
+import static io.student.rangiffler.utils.FakeDataUtils.getRandomName;
+import static io.student.rangiffler.utils.FakeDataUtils.getRandomPassword;
 
 @ExtendWith(BrowserExtension.class)
 public class RegistrationTest {
