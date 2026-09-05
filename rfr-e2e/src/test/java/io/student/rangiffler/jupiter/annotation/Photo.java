@@ -1,5 +1,6 @@
 package io.student.rangiffler.jupiter.annotation;
 
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -7,13 +8,13 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface User {
+public @interface Photo {
 
-    String username() default "";
+    String countryCode() default "";
 
-    int friends() default 0;
+    String description() default "";
 
-    int incomeInvitations() default 0;
+    String src() default "";
 
-    int outcomeInvitations() default 0;
+    int likes() default 0;
 }

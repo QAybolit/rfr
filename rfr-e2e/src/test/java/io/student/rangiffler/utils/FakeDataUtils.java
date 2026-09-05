@@ -25,4 +25,8 @@ public class FakeDataUtils {
     public static String randomSentence(int wordCount) {
         return faker.lorem().sentence(wordCount);
     }
+
+    public static String randomPassword() {
+        return faker.internet().password(4, 8);
+    }
 }

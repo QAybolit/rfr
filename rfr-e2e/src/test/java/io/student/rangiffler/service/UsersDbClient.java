@@ -6,13 +6,20 @@ import io.student.rangiffler.data.entity.auth.Authority;
 import io.student.rangiffler.data.entity.auth.AuthorityEntity;
 import io.student.rangiffler.data.entity.user.UserEntity;
 import io.student.rangiffler.data.repository.AuthUserRepository;
+import io.student.rangiffler.data.repository.CountryRepository;
 import io.student.rangiffler.data.repository.UserRepository;
+import io.student.rangiffler.data.repository.impl.CountryRepositoryHibernate;
 import io.student.rangiffler.data.tpl.XaTransactionTemplate;
 import io.student.rangiffler.model.UserJson;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import static io.student.rangiffler.utils.FakeDataUtils.randomUsername;
+
 
 public class UsersDbClient implements UsersClient {
 
@@ -21,6 +28,7 @@ public class UsersDbClient implements UsersClient {
 
     private final AuthUserRepository authUserRepository = AuthUserRepository.getInstance();
     private final UserRepository userRepository = UserRepository.getInstance();
+    private final CountryRepository countryRepository = new CountryRepositoryHibernate();
 
     private final XaTransactionTemplate xaTxTemplate = new XaTransactionTemplate(
             CFG.authJdbcUrl(),
@@ -36,6 +44,72 @@ public class UsersDbClient implements UsersClient {
                     userRepository.createUser(userEntity(username))
             );
         });
+    }
+
+    @Override
+    public List<UserJson> createIncomeInvitation(UserJson targetUser, int count) {
+        List<UserJson> users = new ArrayList<>();
+
+        if (count > 0) {
+            UserEntity targetEntity = userRepository.findById(targetUser.id()).orElseThrow();
+
+            for (int i = 0; i < count; i++) {
+                xaTxTemplate.execute(() -> {
+                    String username = randomUsername();
+                    AuthUserEntity authUser = getAuthUserEntity(username, "12345");
+                    authUserRepository.create(authUser);
+                    UserEntity addressee = userRepository.createUser(userEntity(username));
+                    userRepository.addFriendshipRequest(addressee, targetEntity);
+                    users.add(UserJson.fromEntity(addressee));
+                    return null;
+                });
+            }
+        }
+        return users;
+    }
+
+    @Override
+    public List<UserJson> createOutcomeInvitation(UserJson targetUser, int count) {
+        List<UserJson> users = new ArrayList<>();
+
+        if (count > 0) {
+            UserEntity targetEntity = userRepository.findById(targetUser.id()).orElseThrow();
+
+            for (int i = 0; i < count; i++) {
+                xaTxTemplate.execute(() -> {
+                    String username = randomUsername();
+                    AuthUserEntity authUser = getAuthUserEntity(username, "12345");
+                    authUserRepository.create(authUser);
+                    UserEntity addressee = userRepository.createUser(userEntity(username));
+                    userRepository.addFriendshipRequest(targetEntity, addressee);
+                    users.add(UserJson.fromEntity(addressee));
+                    return null;
+                });
+            }
+        }
+        return users;
+    }
+
+    @Override
+    public List<UserJson> createFriends(UserJson targetUser, int count) {
+        List<UserJson> users = new ArrayList<>();
+
+        if (count > 0) {
+            UserEntity targetEntity = userRepository.findById(targetUser.id()).orElseThrow();
+
+            for (int i = 0; i < count; i++) {
+                xaTxTemplate.execute(() -> {
+                    String username = randomUsername();
+                    AuthUserEntity authUser = getAuthUserEntity(username, "12345");
+                    authUserRepository.create(authUser);
+                    UserEntity addressee = userRepository.createUser(userEntity(username));
+                    userRepository.addFriend(targetEntity, addressee);
+                    users.add(UserJson.fromEntity(addressee));
+                    return null;
+                });
+            }
+        }
+        return users;
     }
 
     private AuthUserEntity getAuthUserEntity(String username, String password) {
@@ -62,6 +136,7 @@ public class UsersDbClient implements UsersClient {
     private UserEntity userEntity(String username) {
         UserEntity ue = new UserEntity();
         ue.setUsername(username);
+        ue.setCountry(countryRepository.findByCode("es").get());
         return ue;
     }
 }

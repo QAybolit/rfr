@@ -7,8 +7,12 @@ import io.student.rangiffler.data.entity.user.UserEntity;
 import io.student.rangiffler.data.repository.PhotoRepository;
 import io.student.rangiffler.data.tpl.XaTransactionTemplate;
 import io.student.rangiffler.model.PhotoJson;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.util.StreamUtils;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class PhotoDbClient implements PhotoClient {
@@ -34,7 +38,7 @@ public class PhotoDbClient implements PhotoClient {
     private PhotoEntity getPhotoEntity(PhotoJson json) {
         PhotoEntity photo = new PhotoEntity();
         photo.setDescription(json.description());
-        photo.setPhoto(json.photo() != null ? json.photo().getBytes(StandardCharsets.UTF_8) : null);
+        photo.setPhoto(json.photo() != null ? json.photo().getBytes(StandardCharsets.UTF_8) : loadPhoto());
 
         UserEntity user = new UserEntity();
         user.setId(json.userId());
@@ -45,5 +49,15 @@ public class PhotoDbClient implements PhotoClient {
         photo.setCountry(country);
 
         return photo;
+    }
+
+    private byte[] loadPhoto() {
+        try {
+            Resource resource = new ClassPathResource("images/default.jpg");
+            return StreamUtils.copyToByteArray(resource.getInputStream());
+        } catch (IOException e) {
+            // NOP
+            return null;
+        }
     }
 }

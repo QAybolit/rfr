@@ -17,7 +17,7 @@ public class UserEntityExtractor implements ResultSetExtractor<UserEntity> {
 
     private UserEntityExtractor() {
     }
-    
+
     @Override
     public UserEntity extractData(ResultSet rs) throws SQLException, DataAccessException {
         Map<UUID, UserEntity> userMap = new ConcurrentHashMap<>();
@@ -44,7 +44,7 @@ public class UserEntityExtractor implements ResultSetExtractor<UserEntity> {
             country.setName(rs.getString("name"));
             country.setCode(rs.getString("code"));
             country.setFlag(rs.getObject("flag", byte[].class));
-            
+
             user.setCountry(country);
         }
         return userMap.get(userId);

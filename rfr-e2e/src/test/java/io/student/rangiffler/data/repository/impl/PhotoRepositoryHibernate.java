@@ -1,7 +1,9 @@
 package io.student.rangiffler.data.repository.impl;
 
 import io.student.rangiffler.config.Config;
+import io.student.rangiffler.data.entity.user.LikeEntity;
 import io.student.rangiffler.data.entity.user.PhotoEntity;
+import io.student.rangiffler.data.entity.user.UserEntity;
 import io.student.rangiffler.data.jpa.EntityManagers;
 import io.student.rangiffler.data.repository.PhotoRepository;
 import jakarta.persistence.EntityManager;
@@ -9,6 +11,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -73,5 +76,26 @@ public class PhotoRepositoryHibernate implements PhotoRepository {
     public void remove(@NotNull PhotoEntity photo) {
         entityManager.joinTransaction();
         entityManager.remove(photo);
+    }
+
+    @Override
+    public void addLike(@NotNull UUID photoId, @NotNull UUID userId) {
+        entityManager.joinTransaction();
+        PhotoEntity photo = entityManager.find(PhotoEntity.class, photoId);
+        UserEntity user = entityManager.find(UserEntity.class, userId);
+        LikeEntity like = new LikeEntity();
+        like.setUser(user);
+        like.setCreatedDate(new java.sql.Date(new Date().getTime()));
+        photo.getLikes().add(like);
+        entityManager.merge(photo);
+    }
+
+    @Override
+    public void removeLike(@NotNull UUID photoId, @NotNull UUID likeId) {
+        entityManager.joinTransaction();
+        PhotoEntity photo = entityManager.find(PhotoEntity.class, photoId);
+        LikeEntity like = entityManager.find(LikeEntity.class, likeId);
+        photo.getLikes().remove(like);
+        entityManager.merge(photo);
     }
 }

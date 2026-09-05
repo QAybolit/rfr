@@ -70,6 +70,7 @@ dependencies {
     testImplementation "com.atomikos:transactions-hibernate4:${atomikosVersion}:jakarta"
     testImplementation "com.atomikos:transactions-jdbc:${atomikosVersion}"
     testImplementation "org.springframework.security:spring-security-crypto:${springCryptoVersion}"
+    testImplementation 'com.github.h-thurow:simple-jndi:0.25.0'
     // Allure
     agent "org.aspectj:aspectjweaver:${aspectJVersion}"
     testImplementation platform("io.qameta.allure:allure-bom:$allureVersion")

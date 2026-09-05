@@ -2,23 +2,22 @@ package io.student.rangiffler.test;
 
 import io.student.rangiffler.config.Config;
 import io.student.rangiffler.jupiter.annotation.User;
-import io.student.rangiffler.jupiter.extension.BrowserExtension;
+import io.student.rangiffler.jupiter.annotation.meta.WebTest;
 import io.student.rangiffler.model.UserJson;
 import io.student.rangiffler.page.EnterPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import static com.codeborne.selenide.Selenide.open;
-import static io.student.rangiffler.utils.FakeDataUtils.getRandomName;
-import static io.student.rangiffler.utils.FakeDataUtils.getRandomPassword;
+import static io.student.rangiffler.utils.FakeDataUtils.randomPassword;
+import static io.student.rangiffler.utils.FakeDataUtils.randomUsername;
 
-@ExtendWith(BrowserExtension.class)
+@WebTest
 public class LoginTest {
 
     static final Config CONFIG = Config.getInstance();
 
-    @User
+    @User(username = "Maximus-4")
     @Test
     @DisplayName("Successful login")
     public void validateMainPageAfterSuccessLogin(UserJson user) {
@@ -27,12 +26,12 @@ public class LoginTest {
                 .clickLoginButton()
                 .validateLoginPage()
                 .enterUsername(user.username())
-                .enterPassword(user.password())
+                .enterPassword(user.testData().password())
                 .submitLoginForm()
                 .validateTravelMapPage();
     }
 
-    @User
+    @User(username = "Maximus-5")
     @Test
     @DisplayName("Unsuccessful login with invalid username")
     public void shouldNotLoginWithInvalidUsername(UserJson user) {
@@ -40,13 +39,13 @@ public class LoginTest {
                 .validateEnterPage()
                 .clickLoginButton()
                 .validateLoginPage()
-                .enterUsername(getRandomName())
-                .enterPassword(user.password())
+                .enterUsername(randomUsername())
+                .enterPassword(user.testData().password())
                 .submitLoginFormWithBadCredentials()
                 .checkFormError("Неверные учетные данные пользователя");
     }
 
-    @User
+    @User(username = "Maximus-6")
     @Test
     @DisplayName("Unsuccessful login with invalid password")
     public void shouldNotLoginWithInvalidPassword(UserJson user) {
@@ -55,7 +54,7 @@ public class LoginTest {
                 .clickLoginButton()
                 .validateLoginPage()
                 .enterUsername(user.username())
-                .enterPassword(getRandomPassword())
+                .enterPassword(randomPassword())
                 .submitLoginFormWithBadCredentials()
                 .checkFormError("Неверные учетные данные пользователя");
     }

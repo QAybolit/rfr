@@ -67,7 +67,7 @@ public class PhotoRepositorySpringJdbc implements PhotoRepository {
     public Optional<PhotoEntity> findById(@NotNull UUID id) {
         return Optional.ofNullable(
                 template.query(
-                        "SELECT * FROM photo p WHERE p.id = ?",
+                        "SELECT * FROM photo p JOIN photo_like pl ON p.id = pl.photo_id JOIN like l ON pl.like_id = l.id WHERE p.id = ?",
                         PhotoEntityExtractor.INSTANCE,
                         id
                 )
@@ -78,7 +78,8 @@ public class PhotoRepositorySpringJdbc implements PhotoRepository {
     public Optional<PhotoEntity> findByUsernameAndDescription(@NotNull String username, @NotNull String description) {
         return Optional.ofNullable(
                 template.query(
-                        "SELECT * FROM photo p JOIN \"user'\" u ON p.user_id = u.id WHERE u.username = ? AND p.description = ?",
+                        "SELECT * FROM photo p JOIN \"user'\" u ON p.user_id = u.id JOIN photo_like pl ON p.id = pl.photo_id" +
+                                " JOIN like l ON pl.like_id = l.id WHERE u.username = ? AND p.description = ?",
                         PhotoEntityExtractor.INSTANCE,
                         username, description
                 )
@@ -90,7 +91,7 @@ public class PhotoRepositorySpringJdbc implements PhotoRepository {
         return Optional.ofNullable(
                 template.query(
                         "SELECT * FROM photo p JOIN \"user'\" u ON p.user_id = u.id JOIN country c ON p.country_id = c.id" +
-                                " WHERE u.username = ? AND c.code = ?",
+                                " JOIN photo_like pl ON p.id = pl.photo_id JOIN like l ON pl.like_id = l.id WHERE u.username = ? AND c.code = ?",
                         PhotoEntityExtractor.INSTANCE,
                         username, code
                 )
@@ -110,5 +111,37 @@ public class PhotoRepositorySpringJdbc implements PhotoRepository {
     @Override
     public void remove(@NotNull PhotoEntity photo) {
         template.update("DELETE FROM photo WHERE id = ?", photo.getId());
+    }
+
+    @Override
+    public void addLike(@NotNull UUID photoId, @NotNull UUID userId) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        java.sql.Date date = new java.sql.Date(new Date().getTime());
+
+        template.update(con -> {
+            PreparedStatement ps = con.prepareStatement(
+                    "INSERT INTO like (user_id, created_date) VALUES (?, ?)",
+                    PreparedStatement.RETURN_GENERATED_KEYS
+            );
+            ps.setObject(1, userId);
+            ps.setObject(2, date);
+            return ps;
+        }, keyHolder);
+        final UUID likeId = (UUID) keyHolder.getKeys().get("id");
+
+        template.update(con -> {
+            PreparedStatement likePs = con.prepareStatement(
+                    "INSERT INTO photo_like (photo_id, like_id) VALUES (?, ?)"
+            );
+            likePs.setObject(1, photoId);
+            likePs.setObject(2, likeId);
+            return likePs;
+        });
+    }
+
+    @Override
+    public void removeLike(@NotNull UUID photoId, @NotNull UUID likeId) {
+        template.update("DELETE FROM like WHERE id = ?", likeId);
+        template.update("DELETE FROM photo_like WHERE like_id = ? AND photo_id = ?", likeId, photoId);
     }
 }

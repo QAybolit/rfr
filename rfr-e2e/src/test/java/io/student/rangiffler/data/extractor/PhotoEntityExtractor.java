@@ -1,6 +1,7 @@
 package io.student.rangiffler.data.extractor;
 
 import io.student.rangiffler.data.entity.user.CountryEntity;
+import io.student.rangiffler.data.entity.user.LikeEntity;
 import io.student.rangiffler.data.entity.user.PhotoEntity;
 import io.student.rangiffler.data.entity.user.UserEntity;
 import org.springframework.dao.DataAccessException;
@@ -18,13 +19,13 @@ public class PhotoEntityExtractor implements ResultSetExtractor<PhotoEntity> {
 
     private PhotoEntityExtractor() {
     }
-    
+
     @Override
     public PhotoEntity extractData(ResultSet rs) throws SQLException, DataAccessException {
         Map<UUID, PhotoEntity> photoMap = new ConcurrentHashMap<>();
         UUID photoId = null;
         while (rs.next()) {
-            photoId = rs.getObject("id", UUID.class);
+            photoId = rs.getObject("p.id", UUID.class);
             PhotoEntity photo = photoMap.computeIfAbsent(photoId, id -> {
                 try {
                     PhotoEntity newPhoto = new PhotoEntity();
@@ -45,6 +46,16 @@ public class PhotoEntityExtractor implements ResultSetExtractor<PhotoEntity> {
             CountryEntity country = new CountryEntity();
             country.setId(rs.getObject("p.country_id", UUID.class));
             photo.setCountry(country);
+
+            LikeEntity like = new LikeEntity();
+            like.setId(rs.getObject("l.id", UUID.class));
+
+            UserEntity likeUser = new UserEntity();
+            likeUser.setId(rs.getObject("l.user_id", UUID.class));
+            like.setUser(likeUser);
+            like.setCreatedDate(rs.getObject("l.created_date", java.sql.Date.class));
+
+            photo.getLikes().add(like);
         }
         return photoMap.get(photoId);
     }

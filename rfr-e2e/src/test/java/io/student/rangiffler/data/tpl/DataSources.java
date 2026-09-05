@@ -22,13 +22,14 @@ public class DataSources {
                 jdbcUrl,
                 key -> {
                     AtomikosDataSourceBean dsBean = new AtomikosDataSourceBean();
-                    final String uniqueId = StringUtils.substringAfter(jdbcUrl, "5432/");
+                    final String uniqueId = StringUtils.substringAfter(jdbcUrl, "3306/");
                     dsBean.setUniqueResourceName(uniqueId);
-                    dsBean.setXaDataSourceClassName("org.postgresql.xa.PGXADataSource");
+                    dsBean.setXaDataSourceClassName("com.mysql.cj.jdbc.MysqlXADataSource");
                     Properties props = new Properties();
                     props.put("URL", jdbcUrl);
-                    props.put("user", "postgres");
+                    props.put("user", "root");
                     props.put("password", "secret");
+                    props.put("pinGlobalTxToPhysicalConnection", "true");
                     dsBean.setXaProperties(props);
                     dsBean.setPoolSize(3);
                     dsBean.setMaxPoolSize(10);

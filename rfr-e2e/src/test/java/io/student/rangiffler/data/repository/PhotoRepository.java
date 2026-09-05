@@ -34,4 +34,8 @@ public interface PhotoRepository {
     List<PhotoEntity> findAllUserPhotos(String username);
 
     void remove(PhotoEntity photo);
+
+    void addLike(UUID photoId, UUID userId);
+
+    void removeLike(UUID photoId, UUID likeId);
 }
