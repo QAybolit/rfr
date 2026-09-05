@@ -2,18 +2,17 @@ package io.student.rangiffler.test;
 
 import io.student.rangiffler.config.Config;
 import io.student.rangiffler.jupiter.annotation.User;
-import io.student.rangiffler.jupiter.extension.BrowserExtension;
+import io.student.rangiffler.jupiter.annotation.meta.WebTest;
 import io.student.rangiffler.model.UserJson;
 import io.student.rangiffler.page.EnterPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import static com.codeborne.selenide.Selenide.open;
-import static io.student.rangiffler.utils.DataUtils.getRandomName;
-import static io.student.rangiffler.utils.DataUtils.getRandomPassword;
+import static io.student.rangiffler.utils.FakeDataUtils.randomPassword;
+import static io.student.rangiffler.utils.FakeDataUtils.randomUsername;
 
-@ExtendWith(BrowserExtension.class)
+@WebTest
 public class RegistrationTest {
 
     static final Config CONFIG = Config.getInstance();
@@ -21,13 +20,13 @@ public class RegistrationTest {
     @Test
     @DisplayName("Successful registration of a new user")
     public void shouldRegisterNewUser() {
-        String password = getRandomPassword();
+        String password = randomPassword();
 
         open(CONFIG.frontUrl(), EnterPage.class)
                 .validateEnterPage()
                 .clickRegistrationButton()
                 .validateRegistrationPage()
-                .enterUsername(getRandomName())
+                .enterUsername(randomUsername())
                 .enterPassword(password)
                 .enterPasswordSubmit(password)
                 .submitRegistrationForm()
@@ -41,18 +40,18 @@ public class RegistrationTest {
                 .validateEnterPage()
                 .clickRegistrationButton()
                 .validateRegistrationPage()
-                .enterUsername(getRandomName())
-                .enterPassword(getRandomPassword())
-                .enterPasswordSubmit(getRandomPassword())
+                .enterUsername(randomUsername())
+                .enterPassword(randomPassword())
+                .enterPasswordSubmit(randomPassword())
                 .submitRegistrationFormWithBadCredentials()
                 .checkFormError("Passwords should be equal");
     }
 
-    @User
+    @User(username = "Alexandr")
     @Test
     @DisplayName("Unsuccessful registration of a new user with an existing username")
     public void shouldNotRegisterNewUserWithExistingUsername(UserJson user) {
-        String password = getRandomPassword();
+        String password = randomPassword();
 
         open(CONFIG.frontUrl(), EnterPage.class)
                 .validateEnterPage()
