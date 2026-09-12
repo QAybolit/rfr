@@ -2,17 +2,17 @@ package io.student.rangiffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
+import io.student.rangiffler.page.component.HeaderComponent;
 
 import static com.codeborne.selenide.Selenide.$;
 
 public class BasePage {
 
-    protected final SelenideElement header = $("h1.MuiTypography-root");
     protected final SelenideElement menuButton = $("button[aria-label='open drawer']");
     protected final SelenideElement profileButton = $("[data-testid='AccountCircleRoundedIcon']");
-    protected final SelenideElement travelsMapButton = $("[data-testid='PublicRoundedIcon']");
-    protected final SelenideElement personSearchButton = $("[data-testid='PersonSearchRoundedIcon']");
-    protected final SelenideElement logoutButton = $("[aria-label='Logout']");
+    protected final SelenideElement feedPageButton = $("[data-testid='PublicRoundedIcon']");
+    protected final SelenideElement peoplePageButton = $("[data-testid='PersonSearchRoundedIcon']");
+    protected final HeaderComponent header = new HeaderComponent();
 
     @Step("Click profile menu button")
     public ProfilePage clickProfileMenuButton() {
@@ -20,21 +20,21 @@ public class BasePage {
         return new ProfilePage();
     }
 
-    @Step("Click travel map menu button")
-    public TravelMapPage clickTravelMapMenuButton() {
-        this.travelsMapButton.click();
-        return new TravelMapPage();
+    @Step("Click feed page menu button")
+    public FeedPage clickFeedPageMenuButton() {
+        this.feedPageButton.click();
+        return new FeedPage();
     }
 
-    @Step("Click person search menu button")
-    public SearchPeoplePage clickPersonSearchButton() {
-        this.personSearchButton.click();
-        return new SearchPeoplePage();
+    @Step("Click people page menu button")
+    public PeoplePage clickPeoplePageButton() {
+        this.peoplePageButton.click();
+        return new PeoplePage();
     }
 
     @Step("Click logout button")
     public EnterPage clickLogoutButton() {
-        this.logoutButton.click();
+        this.header.clickLogoutButton();
         return new EnterPage();
     }
 }

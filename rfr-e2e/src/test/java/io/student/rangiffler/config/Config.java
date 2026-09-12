@@ -10,7 +10,9 @@ public interface Config {
 
     String registerUrl();
 
-    String registerJdbcUrl();
+    String authJdbcUrl();
+
+    String apiJdbcUrl();
 
     String dbUsername();
 

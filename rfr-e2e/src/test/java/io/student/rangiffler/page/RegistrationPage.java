@@ -2,12 +2,15 @@ package io.student.rangiffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
+import io.student.rangiffler.config.Config;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class RegistrationPage {
+
+    public static String URL = Config.getInstance().frontUrl() + "/register";
 
     private final SelenideElement logo = $(".header__logo");
     private final SelenideElement header = $("h1.header");

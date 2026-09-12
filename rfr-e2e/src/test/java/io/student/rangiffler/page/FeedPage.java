@@ -2,12 +2,16 @@ package io.student.rangiffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
+import io.student.rangiffler.config.Config;
+import io.student.rangiffler.page.component.PhotoCard;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
-public class TravelMapPage extends BasePage {
+public class FeedPage extends BasePage {
+
+    public static String URL = Config.getInstance().frontUrl() + "/my-travels";
 
     private final SelenideElement mapTitle = $x("//h2[text()='Travels map']");
     private final SelenideElement worldMapImage = $(".worldmap__figure-container");
@@ -17,15 +21,15 @@ public class TravelMapPage extends BasePage {
     private final SelenideElement previousButton = $x("//button[text()='Previous']");
     private final SelenideElement nextButton = $x("//button[text()='Next']");
 
-    @Step("Validate Travel Map Page elements")
-    public TravelMapPage validateTravelMapPage() {
-        this.header.shouldBe(visible);
-        this.menuButton.shouldBe(visible);
+    private final PhotoCard photoCard = new PhotoCard();
+
+    @Step("Validate Feed Page elements")
+    public FeedPage validateFeedPage() {
+        this.header.checkHeaderVisibility();
         this.profileButton.shouldBe(visible);
-        this.travelsMapButton.shouldBe(visible);
-        this.personSearchButton.shouldBe(visible);
+        this.feedPageButton.shouldBe(visible);
+        this.peoplePageButton.shouldBe(visible);
         this.worldMapImage.shouldBe(visible);
-        this.logoutButton.shouldBe(visible);
         return this;
     }
 }
