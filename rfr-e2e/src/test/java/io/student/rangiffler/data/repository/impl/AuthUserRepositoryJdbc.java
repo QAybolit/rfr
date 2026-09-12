@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,7 +28,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     private static final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     @Override
-    public AuthUserEntity create(@NotNull AuthUserEntity user) {
+    public @Nonnull AuthUserEntity create(@NotNull AuthUserEntity user) {
         try (PreparedStatement userPs = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired)" +
                         " VALUES (?, ?, ?, ?, ?, ?)",
@@ -70,7 +71,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     }
 
     @Override
-    public Optional<AuthUserEntity> findById(@NotNull UUID id) {
+    public @Nonnull Optional<AuthUserEntity> findById(@NotNull UUID id) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\" u JOIN authority a on u.id = a.user_id WHERE u.id = ?"
         )) {
@@ -104,7 +105,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     }
 
     @Override
-    public List<AuthUserEntity> findAll() {
+    public @Nonnull List<AuthUserEntity> findAll() {
         List<AuthUserEntity> users = new ArrayList<>();
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\""
@@ -124,7 +125,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     }
 
     @Override
-    public Optional<AuthUserEntity> findByUsername(@NotNull String username) {
+    public @Nonnull Optional<AuthUserEntity> findByUsername(@NotNull String username) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\" u JOIN authority a on u.id = a.user_id WHERE u.username = ?"
         )) {
@@ -158,7 +159,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         }
     }
 
-    private AuthUserEntity authUserEntity(ResultSet rs) throws SQLException {
+    private @Nonnull AuthUserEntity authUserEntity(@Nonnull ResultSet rs) throws SQLException {
         AuthUserEntity ue = new AuthUserEntity();
         ue.setId(rs.getObject("id", UUID.class));
         ue.setUsername(rs.getString("username"));
@@ -169,7 +170,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         return ue;
     }
 
-    private AuthorityEntity authorityEntity(ResultSet rs) throws SQLException {
+    private @Nonnull AuthorityEntity authorityEntity(@Nonnull ResultSet rs) throws SQLException {
         AuthorityEntity ae = new AuthorityEntity();
         ae.setId(rs.getObject("a.id", UUID.class));
         ae.setAuthority(Authority.valueOf(rs.getString("authority")));

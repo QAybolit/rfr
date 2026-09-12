@@ -1,12 +1,15 @@
 package io.student.rangiffler.data.tpl;
 
 import com.atomikos.icatch.jta.UserTransactionImp;
+import jakarta.transaction.Status;
 import jakarta.transaction.SystemException;
 import jakarta.transaction.UserTransaction;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
+@Slf4j
 public class XaTransactionTemplate {
 
     private final JdbcConnectionHolders connectionHolders;
@@ -33,7 +36,12 @@ public class XaTransactionTemplate {
             return result;
         } catch (Exception | AssertionError e) {
             try {
-                ut.rollback();
+                if (ut.getStatus() == Status.STATUS_ACTIVE) {
+                    ut.rollback();
+                }
+                log.error("XaTransactionTemplate execute failed", e);
+                log.error("XaTransactionTemplate execute rollback: {}", e.getMessage());
+//                ut.rollback();
             } catch (SystemException ex) {
                 throw new RuntimeException(ex);
             }
@@ -55,7 +63,12 @@ public class XaTransactionTemplate {
             ut.commit();
         } catch (Exception | AssertionError e) {
             try {
-                ut.rollback();
+                if (ut.getStatus() == Status.STATUS_ACTIVE) {
+                    ut.rollback();
+                }
+                log.error("XaTransactionTemplate execute failed", e);
+                log.error("XaTransactionTemplate execute rollback: {}", e.getMessage());
+//                ut.rollback();
             } catch (SystemException ex) {
                 throw new RuntimeException(ex);
             }

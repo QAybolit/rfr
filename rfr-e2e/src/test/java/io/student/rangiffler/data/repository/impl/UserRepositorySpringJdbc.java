@@ -7,11 +7,11 @@ import io.student.rangiffler.data.extractor.UserEntityExtractor;
 import io.student.rangiffler.data.extractor.UserEntityListExtractor;
 import io.student.rangiffler.data.repository.UserRepository;
 import io.student.rangiffler.data.tpl.DataSources;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +24,7 @@ public class UserRepositorySpringJdbc implements UserRepository {
     private static final Config CFG = Config.getInstance();
 
     @Override
-    public UserEntity createUser(@NotNull UserEntity user) {
+    public @Nonnull UserEntity createUser(@Nonnull UserEntity user) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         template.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -47,7 +47,7 @@ public class UserRepositorySpringJdbc implements UserRepository {
     }
 
     @Override
-    public UserEntity updateUser(@NotNull UserEntity user) {
+    public @Nonnull UserEntity updateUser(@Nonnull UserEntity user) {
         template.update(con -> {
             PreparedStatement ps = con.prepareStatement(
                     "UPDATE \"user\" SET username = ?, firstname = ?, last_name = ?, avatar = ?, country_id = ?" +
@@ -66,7 +66,7 @@ public class UserRepositorySpringJdbc implements UserRepository {
     }
 
     @Override
-    public Optional<UserEntity> findById(@NotNull UUID id) {
+    public @Nonnull Optional<UserEntity> findById(@Nonnull UUID id) {
         return Optional.ofNullable(
                 template.query(
                         "SELECT * FROM \"user\" u JOIN country c ON u.country_id = c.id WHERE u.id = ?",
@@ -77,7 +77,7 @@ public class UserRepositorySpringJdbc implements UserRepository {
     }
 
     @Override
-    public Optional<UserEntity> findByUsername(@NotNull String username) {
+    public @Nonnull Optional<UserEntity> findByUsername(@Nonnull String username) {
         return Optional.ofNullable(
                 template.query(
                         "SELECT * FROM \"user\" u JOIN country c ON u.country_id = c.id WHERE u.username = ?",
@@ -88,7 +88,7 @@ public class UserRepositorySpringJdbc implements UserRepository {
     }
 
     @Override
-    public List<UserEntity> findAll() {
+    public @Nonnull List<UserEntity> findAll() {
         List<UserEntity> users = template.query(
                 "SELECT * FROM \"user\"",
                 UserEntityListExtractor.INSTANCE
@@ -97,7 +97,7 @@ public class UserRepositorySpringJdbc implements UserRepository {
     }
 
     @Override
-    public void addFriendshipRequest(@NotNull UserEntity requester, @NotNull UserEntity addressee) {
+    public void addFriendshipRequest(@Nonnull UserEntity requester, @Nonnull UserEntity addressee) {
         template.update(con -> {
                     PreparedStatement ps = con.prepareStatement(
                             "INSERT INTO friendship (requester_id, addressee_id, status, created_date) VALUES (?, ?, ?, ?)"
@@ -112,7 +112,7 @@ public class UserRepositorySpringJdbc implements UserRepository {
     }
 
     @Override
-    public void addFriend(@NotNull UserEntity requester, @NotNull UserEntity addressee) {
+    public void addFriend(@Nonnull UserEntity requester, @Nonnull UserEntity addressee) {
         List<UserEntity> users = template.query(
                 "SELECT * FROM \"user\" WHERE requester_id = ? AND addressee_id = ? OR requester_id = ? AND addressee_id = ?",
                 UserEntityListExtractor.INSTANCE

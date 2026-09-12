@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ public class AuthUserEntity implements Serializable {
         }
     }
 
-    public void removeAuthority(AuthorityEntity authority) {
+    public void removeAuthority(@Nonnull AuthorityEntity authority) {
         this.authorities.remove(authority);
         authority.setUser(null);
     }

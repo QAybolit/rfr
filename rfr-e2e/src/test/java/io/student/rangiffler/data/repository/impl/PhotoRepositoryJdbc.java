@@ -6,8 +6,8 @@ import io.student.rangiffler.data.entity.user.LikeEntity;
 import io.student.rangiffler.data.entity.user.PhotoEntity;
 import io.student.rangiffler.data.entity.user.UserEntity;
 import io.student.rangiffler.data.repository.PhotoRepository;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,7 +27,7 @@ public class PhotoRepositoryJdbc implements PhotoRepository {
     private static final Config CFG = Config.getInstance();
 
     @Override
-    public PhotoEntity create(@NotNull PhotoEntity photo) {
+    public @Nonnull PhotoEntity create(@Nonnull PhotoEntity photo) {
         try (PreparedStatement ps = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO photo (user_id, country_id, description, photo, created_date)" +
                         " VALUES (?, ?, ?, ?, ?)",
@@ -58,7 +58,7 @@ public class PhotoRepositoryJdbc implements PhotoRepository {
     }
 
     @Override
-    public PhotoEntity update(@NotNull PhotoEntity photo) {
+    public @Nonnull PhotoEntity update(@Nonnull PhotoEntity photo) {
         try (PreparedStatement ps = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
                 "UPDATE photo SET user_id = ?, country_id = ?, description = ?, photo = ?" +
                         " WHERE id = ?"
@@ -78,7 +78,7 @@ public class PhotoRepositoryJdbc implements PhotoRepository {
     }
 
     @Override
-    public Optional<PhotoEntity> findById(@NotNull UUID id) {
+    public @Nonnull Optional<PhotoEntity> findById(@Nonnull UUID id) {
         try (PreparedStatement ps = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM photo p JOIN photo_like pl ON p.id = pl.photo_id JOIN like l ON pl.like_id = l.id WHERE p.id = ?"
         )) {
@@ -119,7 +119,7 @@ public class PhotoRepositoryJdbc implements PhotoRepository {
     }
 
     @Override
-    public Optional<PhotoEntity> findByUsernameAndDescription(@NotNull String username, @NotNull String description) {
+    public @Nonnull Optional<PhotoEntity> findByUsernameAndDescription(@Nonnull String username, @Nonnull String description) {
         try (PreparedStatement ps = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM photo p JOIN \"user'\" u ON p.user_id = u.id JOIN photo_like pl ON p.id = pl.photo_id" +
                         " JOIN like l ON pl.like_id = l.id WHERE u.username = ? AND p.description = ?"
@@ -159,7 +159,7 @@ public class PhotoRepositoryJdbc implements PhotoRepository {
     }
 
     @Override
-    public Optional<PhotoEntity> findByUsernameAndCountry(@NotNull String username, @NotNull String code) {
+    public @Nonnull Optional<PhotoEntity> findByUsernameAndCountry(@Nonnull String username, @Nonnull String code) {
         try (PreparedStatement ps = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM photo p JOIN \"user'\" u ON p.user_id = u.id JOIN country c ON p.country_id = c.id" +
                         " JOIN photo_like pl ON p.id = pl.photo_id JOIN like l ON pl.like_id = l.id WHERE u.username = ? AND c.code = ?"
@@ -202,7 +202,7 @@ public class PhotoRepositoryJdbc implements PhotoRepository {
     }
 
     @Override
-    public List<PhotoEntity> findAllUserPhotos(@NotNull String username) {
+    public @Nonnull List<PhotoEntity> findAllUserPhotos(@Nonnull String username) {
         List<PhotoEntity> photos = new ArrayList<>();
         try (PreparedStatement ps = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM photo p JOIN \"user'\" u ON p.user_id = u.id WHERE u.username = ?"
@@ -229,7 +229,7 @@ public class PhotoRepositoryJdbc implements PhotoRepository {
     }
 
     @Override
-    public void remove(@NotNull PhotoEntity photo) {
+    public void remove(@Nonnull PhotoEntity photo) {
         try (PreparedStatement ps = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
                 "DELETE FROM photo WHERE id = ?"
         )) {
@@ -245,7 +245,7 @@ public class PhotoRepositoryJdbc implements PhotoRepository {
     }
 
     @Override
-    public void addLike(@NotNull UUID photoId, @NotNull UUID userId) {
+    public void addLike(@Nonnull UUID photoId, @Nonnull UUID userId) {
         try (PreparedStatement ps = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO like (user_id, created_date) VALUES (?, ?)",
                 Statement.RETURN_GENERATED_KEYS);
@@ -276,7 +276,7 @@ public class PhotoRepositoryJdbc implements PhotoRepository {
     }
 
     @Override
-    public void removeLike(@NotNull UUID photoId, @NotNull UUID likeId) {
+    public void removeLike(@Nonnull UUID photoId, @Nonnull UUID likeId) {
         try (PreparedStatement psLike = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
                 "DELETE FROM like WHERE id = ?"
         ); PreparedStatement ps = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
@@ -294,7 +294,7 @@ public class PhotoRepositoryJdbc implements PhotoRepository {
         }
     }
 
-    private PhotoEntity photoEntity(ResultSet rs) throws SQLException {
+    private @Nonnull PhotoEntity photoEntity(@Nonnull ResultSet rs) throws SQLException {
         PhotoEntity photo = new PhotoEntity();
         photo.setId(rs.getObject("p.id", UUID.class));
         photo.setDescription(rs.getString("p.description"));
@@ -303,7 +303,7 @@ public class PhotoRepositoryJdbc implements PhotoRepository {
         return photo;
     }
 
-    private UserEntity userEntity(ResultSet rs) throws SQLException {
+    private @Nonnull UserEntity userEntity(@Nonnull ResultSet rs) throws SQLException {
         UserEntity user = new UserEntity();
         user.setId(rs.getObject("u.id", UUID.class));
         user.setUsername(rs.getString("u.username"));
@@ -318,8 +318,7 @@ public class PhotoRepositoryJdbc implements PhotoRepository {
         return user;
     }
 
-    @NotNull
-    private static LikeEntity getLikeEntity(ResultSet rs) throws SQLException {
+    private static @Nonnull LikeEntity getLikeEntity(@Nonnull ResultSet rs) throws SQLException {
         LikeEntity like = new LikeEntity();
         like.setId(rs.getObject("l.id", UUID.class));
 

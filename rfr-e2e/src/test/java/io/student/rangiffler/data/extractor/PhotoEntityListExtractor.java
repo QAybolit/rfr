@@ -6,12 +6,15 @@ import io.student.rangiffler.data.entity.user.UserEntity;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class PhotoEntityListExtractor implements ResultSetExtractor<List<PhotoEntity>> {
 
     public static final PhotoEntityListExtractor INSTANCE = new PhotoEntityListExtractor();
@@ -20,7 +23,7 @@ public class PhotoEntityListExtractor implements ResultSetExtractor<List<PhotoEn
     }
 
     @Override
-    public List<PhotoEntity> extractData(ResultSet rs) throws SQLException, DataAccessException {
+    public @Nonnull List<PhotoEntity> extractData(ResultSet rs) throws SQLException, DataAccessException {
         List<PhotoEntity> photos = new ArrayList<>();
         while (rs.next()) {
             try {

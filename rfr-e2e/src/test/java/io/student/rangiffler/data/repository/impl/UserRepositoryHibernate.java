@@ -7,8 +7,8 @@ import io.student.rangiffler.data.jpa.EntityManagers;
 import io.student.rangiffler.data.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,25 +19,25 @@ public class UserRepositoryHibernate implements UserRepository {
     private final EntityManager entityManager = EntityManagers.em(CFG.apiJdbcUrl());
 
     @Override
-    public UserEntity createUser(@NotNull UserEntity user) {
+    public @Nonnull UserEntity createUser(@Nonnull UserEntity user) {
         entityManager.joinTransaction();
         entityManager.persist(user);
         return user;
     }
 
     @Override
-    public UserEntity updateUser(@NotNull UserEntity user) {
+    public @Nonnull UserEntity updateUser(@Nonnull UserEntity user) {
         entityManager.joinTransaction();
         return entityManager.merge(user);
     }
 
     @Override
-    public Optional<UserEntity> findById(@NotNull UUID id) {
+    public @Nonnull Optional<UserEntity> findById(@Nonnull UUID id) {
         return Optional.ofNullable(entityManager.find(UserEntity.class, id));
     }
 
     @Override
-    public Optional<UserEntity> findByUsername(@NotNull String username) {
+    public @Nonnull Optional<UserEntity> findByUsername(@Nonnull String username) {
         try {
             return Optional.of(entityManager.createQuery("select u from UserEntity u where u.username = :username", UserEntity.class)
                     .setParameter("username", username)
@@ -48,19 +48,19 @@ public class UserRepositoryHibernate implements UserRepository {
     }
 
     @Override
-    public List<UserEntity> findAll() {
+    public @Nonnull List<UserEntity> findAll() {
         return entityManager.createQuery("select u from UserEntity u", UserEntity.class)
                 .getResultList();
     }
 
     @Override
-    public void addFriendshipRequest(@NotNull UserEntity requester, @NotNull UserEntity addressee) {
+    public void addFriendshipRequest(@Nonnull UserEntity requester, @Nonnull UserEntity addressee) {
         entityManager.joinTransaction();
         requester.addFriends(FriendshipStatus.PENDING, addressee);
     }
 
     @Override
-    public void addFriend(@NotNull UserEntity requester, @NotNull UserEntity addressee) {
+    public void addFriend(@Nonnull UserEntity requester, @Nonnull UserEntity addressee) {
         entityManager.joinTransaction();
         requester.addFriends(FriendshipStatus.ACCEPTED, addressee);
         addressee.addFriends(FriendshipStatus.ACCEPTED, requester);

@@ -33,7 +33,7 @@ public class FriendshipEntity {
     @JoinColumn(name = "addressee_id", referencedColumnName = "id")
     private UserEntity addressee;
 
-    @Column
+    @Column(name = "created_date")
     private Date createdDate;
 
     @Column

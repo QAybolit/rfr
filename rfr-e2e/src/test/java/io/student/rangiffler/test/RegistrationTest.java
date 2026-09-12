@@ -1,6 +1,5 @@
 package io.student.rangiffler.test;
 
-import io.student.rangiffler.config.Config;
 import io.student.rangiffler.jupiter.annotation.User;
 import io.student.rangiffler.jupiter.annotation.meta.WebTest;
 import io.student.rangiffler.model.UserJson;
@@ -15,14 +14,12 @@ import static io.student.rangiffler.utils.FakeDataUtils.randomUsername;
 @WebTest
 public class RegistrationTest {
 
-    static final Config CONFIG = Config.getInstance();
-
     @Test
     @DisplayName("Successful registration of a new user")
     public void shouldRegisterNewUser() {
         String password = randomPassword();
 
-        open(CONFIG.frontUrl(), EnterPage.class)
+        open(EnterPage.URL, EnterPage.class)
                 .validateEnterPage()
                 .clickRegistrationButton()
                 .validateRegistrationPage()
@@ -36,7 +33,7 @@ public class RegistrationTest {
     @Test
     @DisplayName("Unsuccessful registration of a new user with an invalid password")
     public void shouldNotRegisterNewUserWithInvalidPasswordSubmit() {
-        open(CONFIG.frontUrl(), EnterPage.class)
+        open(EnterPage.URL, EnterPage.class)
                 .validateEnterPage()
                 .clickRegistrationButton()
                 .validateRegistrationPage()
@@ -53,7 +50,7 @@ public class RegistrationTest {
     public void shouldNotRegisterNewUserWithExistingUsername(UserJson user) {
         String password = randomPassword();
 
-        open(CONFIG.frontUrl(), EnterPage.class)
+        open(EnterPage.URL, EnterPage.class)
                 .validateEnterPage()
                 .clickRegistrationButton()
                 .validateRegistrationPage()

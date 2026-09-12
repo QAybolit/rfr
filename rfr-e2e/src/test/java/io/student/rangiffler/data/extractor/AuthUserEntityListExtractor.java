@@ -4,12 +4,15 @@ import io.student.rangiffler.data.entity.auth.AuthUserEntity;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class AuthUserEntityListExtractor implements ResultSetExtractor<List<AuthUserEntity>> {
 
     public static final AuthUserEntityListExtractor INSTANCE = new AuthUserEntityListExtractor();
@@ -18,7 +21,7 @@ public class AuthUserEntityListExtractor implements ResultSetExtractor<List<Auth
     }
 
     @Override
-    public List<AuthUserEntity> extractData(ResultSet rs) throws SQLException, DataAccessException {
+    public @Nonnull List<AuthUserEntity> extractData(ResultSet rs) throws SQLException, DataAccessException {
         List<AuthUserEntity> users = new ArrayList<>();
         while (rs.next()) {
             try {

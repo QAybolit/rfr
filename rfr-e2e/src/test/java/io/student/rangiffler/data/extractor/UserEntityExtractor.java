@@ -5,12 +5,15 @@ import io.student.rangiffler.data.entity.user.UserEntity;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@ParametersAreNonnullByDefault
 public class UserEntityExtractor implements ResultSetExtractor<UserEntity> {
 
     public static final UserEntityExtractor INSTANCE = new UserEntityExtractor();
@@ -19,7 +22,7 @@ public class UserEntityExtractor implements ResultSetExtractor<UserEntity> {
     }
 
     @Override
-    public UserEntity extractData(ResultSet rs) throws SQLException, DataAccessException {
+    public @Nonnull UserEntity extractData(ResultSet rs) throws SQLException, DataAccessException {
         Map<UUID, UserEntity> userMap = new ConcurrentHashMap<>();
         UUID userId = null;
         while (rs.next()) {

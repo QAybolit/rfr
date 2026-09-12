@@ -16,6 +16,7 @@ buildscript {
         kafkaClientsVersion = '4.1.1'
         saajVersion = '3.0.4'
         springDataCommonsVersion = '3.5.5'
+        springStarterDataJpaVersion = '3.5.5'
         wiremockVersion = '3.13.2'
         ashotVersion = '1.5.4'
         fakerVersion = '1.0.2'
@@ -29,6 +30,7 @@ buildscript {
 plugins {
     id 'io.qameta.allure' version '3.0.1'
     id 'io.qameta.allure-adapter' version '3.0.1'
+    id 'com.netflix.dgs.codegen' version '8.3.0'
 }
 
 group = 'guru.qa'
@@ -58,7 +60,8 @@ dependencies {
     testImplementation("com.squareup.retrofit2:converter-jackson:${retrofitVersion}") {
         exclude group: "com.squareup.okhttp3"
     }
-    testImplementation "org.springframework.data:spring-data-commons:${springDataCommonsVersion}"
+//    testImplementation "org.springframework.data:spring-data-commons:${springDataCommonsVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springStarterDataJpaVersion}"
     // DB
     testImplementation "org.springframework:spring-jdbc:${springJdbcVersion}"
     testImplementation "mysql:mysql-connector-java:${project.ext.mysqlDriverVersion}"
@@ -110,6 +113,9 @@ dependencies {
     // Lombok
     testAnnotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
     testCompileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
+    // GraphQL
+    implementation 'com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter:8.3.0'
+    implementation 'com.netflix.graphql.dgs:graphql-dgs-client:8.3.0'
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -129,5 +135,27 @@ tasks.withType(Test).configureEach {
     testLogging {
         events "passed", "skipped", "failed", "standardOut", "standardError"
         exceptionFormat "full"
+    }
+}
+
+generateJava {
+    schemaPaths = ["${projectDir}/src/test/resources/schema"]
+    packageName = 'io.student.rangiffler.model'
+    generateClient = false
+    typeMapping = [
+            'UserConnection': 'org.springframework.data.domain.Page<io.student.rangiffler.model.types.User>',
+            'PhotoConnection': 'org.springframework.data.domain.Page<io.student.rangiffler.model.types.Photo>',
+            'Date': 'java.time.LocalDateTime'
+    ]
+    generatedSourcesDir = "${layout.buildDirectory.get().asFile}/generated/sources/dgs-codegen"
+    language = 'JAVA'
+}
+
+sourceSets {
+    test {
+        java {
+            srcDir('src/test/java')
+            srcDir("$buildDir/generated/sources/dgs-codegen")
+        }
     }
 }

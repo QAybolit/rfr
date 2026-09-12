@@ -1,37 +1,24 @@
 package io.student.rangiffler.model;
 
+import io.student.rangiffler.model.types.User;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public record TestData(String password,
-                       List<UserJson> friendshipRequests,
-                       List<UserJson> friendshipAddressees,
-                       List<UserJson> friends) {
+                       List<User> otherPeople) {
 
     public TestData(String password) {
-        this(password, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        this(password, new ArrayList<>());
     }
 
-    public TestData(String password, List<UserJson> friendshipRequests, List<UserJson> friendshipAddressees, List<UserJson> friends) {
+    public TestData(String password, List<User> otherPeople) {
         this.password = password;
-        this.friendshipRequests = friendshipRequests;
-        this.friendshipAddressees = friendshipAddressees;
-        this.friends = friends;
+        this.otherPeople = otherPeople;
     }
 
-    public String[] friendsUsernames() {
-        return extractUsernames(friends);
+    public String[] otherPeopleNames() {
+        return otherPeople.stream().map(User::getUsername).toArray(String[]::new);
     }
 
-    public String[] friendshipRequestsUsernames() {
-        return extractUsernames(friendshipRequests);
-    }
-
-    public String[] friendshipAddresseesUsernames() {
-        return extractUsernames(friendshipAddressees);
-    }
-
-    private String[] extractUsernames(List<UserJson> users) {
-        return users.stream().map(UserJson::username).toArray(String[]::new);
-    }
 }

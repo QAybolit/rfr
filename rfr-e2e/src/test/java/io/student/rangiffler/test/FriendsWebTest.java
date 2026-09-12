@@ -1,6 +1,5 @@
 package io.student.rangiffler.test;
 
-import io.student.rangiffler.config.Config;
 import io.student.rangiffler.jupiter.annotation.meta.WebTest;
 import io.student.rangiffler.jupiter.extension.UsersQueueExtension;
 import io.student.rangiffler.jupiter.extension.UsersQueueExtension.StaticUser;
@@ -19,21 +18,19 @@ import static io.student.rangiffler.jupiter.extension.UsersQueueExtension.UserTy
 @WebTest
 public class FriendsWebTest {
 
-    static final Config CONFIG = Config.getInstance();
-
     @Test
     @ExtendWith(UsersQueueExtension.class)
     @DisplayName("Display friends in friends list for user")
     public void friendShouldBePresentInFriendsTable(@UserType(value = WITH_FRIENDS) StaticUser user) {
-        open(CONFIG.frontUrl(), EnterPage.class)
+        open(EnterPage.URL, EnterPage.class)
                 .validateEnterPage()
                 .clickLoginButton()
                 .validateLoginPage()
                 .enterUsername(user.username())
                 .enterPassword(user.password())
                 .submitLoginForm()
-                .validateTravelMapPage()
-                .clickPersonSearchButton()
+                .validateFeedPage()
+                .clickPeoplePageButton()
                 .goToIncomeTab()
                 .checkIncomeListIsEmpty()
                 .goToOutcomeTab()
@@ -47,15 +44,15 @@ public class FriendsWebTest {
     @ExtendWith(UsersQueueExtension.class)
     @DisplayName("No people in friends list, income list and outcome list for user")
     public void friendsTableShouldBeEmptyForNewUser(@UserType(value = EMPTY) StaticUser user) {
-        open(CONFIG.frontUrl(), EnterPage.class)
+        open(EnterPage.URL, EnterPage.class)
                 .validateEnterPage()
                 .clickLoginButton()
                 .validateLoginPage()
                 .enterUsername(user.username())
                 .enterPassword(user.password())
                 .submitLoginForm()
-                .validateTravelMapPage()
-                .clickPersonSearchButton()
+                .validateFeedPage()
+                .clickPeoplePageButton()
                 .goToFriendsTab()
                 .checkFriendsListIsEmpty()
                 .goToIncomeTab()
@@ -68,15 +65,15 @@ public class FriendsWebTest {
     @ExtendWith(UsersQueueExtension.class)
     @DisplayName("Display income invitation in income list for user")
     public void incomeInvitationBePresentInFriendsTable(@UserType(value = WITH_INCOME_REQUEST) StaticUser user) {
-        open(CONFIG.frontUrl(), EnterPage.class)
+        open(EnterPage.URL, EnterPage.class)
                 .validateEnterPage()
                 .clickLoginButton()
                 .validateLoginPage()
                 .enterUsername(user.username())
                 .enterPassword(user.password())
                 .submitLoginForm()
-                .validateTravelMapPage()
-                .clickPersonSearchButton()
+                .validateFeedPage()
+                .clickPeoplePageButton()
                 .goToFriendsTab()
                 .checkFriendsListIsEmpty()
                 .goToOutcomeTab()
@@ -92,15 +89,15 @@ public class FriendsWebTest {
     @ExtendWith(UsersQueueExtension.class)
     @DisplayName("Display outcome invitation in outcome list for user")
     public void outcomeInvitationBePresentInAllPeoplesTable(@UserType(value = WITH_OUTCOME_REQUEST) StaticUser user) {
-        open(CONFIG.frontUrl(), EnterPage.class)
+        open(EnterPage.URL, EnterPage.class)
                 .validateEnterPage()
                 .clickLoginButton()
                 .validateLoginPage()
                 .enterUsername(user.username())
                 .enterPassword(user.password())
                 .submitLoginForm()
-                .validateTravelMapPage()
-                .clickPersonSearchButton()
+                .validateFeedPage()
+                .clickPeoplePageButton()
                 .goToFriendsTab()
                 .checkFriendsListIsEmpty()
                 .goToIncomeTab()
@@ -116,19 +113,20 @@ public class FriendsWebTest {
     @DisplayName("Outcome invitation be declined by another user")
     public void outcomeInvitationBeDecline(@UserType(value = WITH_OUTCOME_REQUEST) StaticUser outcomeUser,
                                            @UserType(value = EMPTY) StaticUser incomeUser) {
-        open(CONFIG.frontUrl(), EnterPage.class)
+        open(EnterPage.URL, EnterPage.class)
                 .validateEnterPage()
                 .clickLoginButton()
                 .validateLoginPage()
                 .enterUsername(outcomeUser.username())
                 .enterPassword(outcomeUser.password())
                 .submitLoginForm()
-                .validateTravelMapPage()
-                .clickPersonSearchButton()
+                .validateFeedPage()
+                .clickPeoplePageButton()
                 .goToFriendsTab()
                 .checkFriendsListIsEmpty()
                 .goToIncomeTab()
                 .checkIncomeListIsEmpty()
+                .goToAllPeopleTab()
                 .findPerson(incomeUser.username())
                 .inviteFriend(incomeUser.username())
                 .refreshPage()
@@ -140,7 +138,7 @@ public class FriendsWebTest {
                 .enterUsername(incomeUser.username())
                 .enterPassword(incomeUser.password())
                 .submitLoginForm()
-                .clickPersonSearchButton()
+                .clickPeoplePageButton()
                 .goToFriendsTab()
                 .checkFriendsListIsEmpty()
                 .goToOutcomeTab()

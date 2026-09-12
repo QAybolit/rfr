@@ -7,8 +7,8 @@ import io.student.rangiffler.data.repository.CountryRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public class CountryRepositoryHibernate implements CountryRepository {
@@ -17,7 +17,7 @@ public class CountryRepositoryHibernate implements CountryRepository {
     private final EntityManager entityManager = EntityManagers.em(CFG.apiJdbcUrl());
 
     @Override
-    public Optional<CountryEntity> findByCode(@NotNull String code) {
+    public @Nonnull Optional<CountryEntity> findByCode(@Nonnull String code) {
         try {
             return Optional.of(entityManager.createQuery("select c from CountryEntity c where c.code = :code",
                             CountryEntity.class)

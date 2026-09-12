@@ -4,17 +4,21 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
+import io.student.rangiffler.config.Config;
 
 import static com.codeborne.selenide.CollectionCondition.anyMatch;
 import static com.codeborne.selenide.CollectionCondition.empty;
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
+import static com.codeborne.selenide.Condition.partialText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.$$x;
 import static com.codeborne.selenide.Selenide.$x;
 
-public class SearchPeoplePage extends BasePage {
+public class PeoplePage extends BasePage {
+
+    public static String URL = Config.getInstance().frontUrl() + "/people";
 
     private final SelenideElement friendsTab = $x("//button[text()='Friends']");
     private final SelenideElement allPeopleTab = $x("//button[text()='All People']");
@@ -32,104 +36,128 @@ public class SearchPeoplePage extends BasePage {
     private final ElementsCollection declineButtons = $$x("//td/button[text()='Decline']");
 
     @Step("Find person with name {}")
-    public SearchPeoplePage findPerson(String name) {
-        this.allPeopleTab.click();
+    public PeoplePage findPerson(String name) {
         this.searchPeopleInput.setValue(name);
         this.searchPeopleButton.click();
         this.allPeopleList.shouldHave(size(1))
-                .shouldHave(anyMatch("List contains name " + name, e -> e.getText().contains(name)));;
+                .shouldHave(anyMatch("List contains name " + name, e -> e.getText().contains(name)));
+        ;
         return this;
     }
 
     @Step("Invite friend with name {}")
-    public SearchPeoplePage inviteFriend(String name) {
-        this.addButtons.first().click();
+    public PeoplePage inviteFriend(String name) {
+        this.allPeopleList.find(partialText(name)).$("td button").click();
+        return this;
+    }
+
+    @Step("Go to all people tab")
+    public PeoplePage goToAllPeopleTab() {
+        this.allPeopleTab.click();
         return this;
     }
 
     @Step("Go to friends tab")
-    public SearchPeoplePage goToFriendsTab() {
+    public PeoplePage goToFriendsTab() {
         this.friendsTab.click();
         return this;
     }
 
     @Step("Check friends list is empty")
-    public SearchPeoplePage checkFriendsListIsEmpty() {
+    public PeoplePage checkFriendsListIsEmpty() {
         this.friendsList.shouldBe(empty);
         return this;
     }
 
     @Step("Check friends list contains {}")
-    public SearchPeoplePage checkFriendsListContainsName(String name) {
+    public PeoplePage checkFriendsListContainsName(String name) {
         this.friendsList.shouldHave(sizeGreaterThan(0));
         this.friendsList.shouldHave(anyMatch("List contains name " + name, e -> e.getText().contains(name)));
         return this;
     }
 
     @Step("Go to outcome tab")
-    public SearchPeoplePage goToOutcomeTab() {
+    public PeoplePage goToOutcomeTab() {
         this.outcomeInvitationsTab.click();
         return this;
     }
 
     @Step("Check outcome list is empty")
-    public SearchPeoplePage checkOutcomeListIsEmpty() {
+    public PeoplePage checkOutcomeListIsEmpty() {
         this.outcomeList.shouldBe(empty);
         return this;
     }
 
     @Step("Check outcome list contains {}")
-    public SearchPeoplePage checkOutcomeListContainsText(String name) {
+    public PeoplePage checkOutcomeListContainsText(String name) {
         this.outcomeList.shouldHave(sizeGreaterThan(0));
         this.outcomeList.shouldHave(anyMatch("List contains name " + name, e -> e.getText().contains(name)));
         return this;
     }
 
     @Step("Check all rows in outcome list contain status 'Waiting'")
-    public SearchPeoplePage checkOutcomeListContainsStatus() {
+    public PeoplePage checkOutcomeListContainsStatus() {
         this.outcomeStatuses.shouldBe(size(this.outcomeList.size()));
         return this;
     }
 
     @Step("Go to income tab")
-    public SearchPeoplePage goToIncomeTab() {
+    public PeoplePage goToIncomeTab() {
         this.incomeInvitationsTab.click();
         return this;
     }
 
     @Step("Check income list is empty")
-    public SearchPeoplePage checkIncomeListIsEmpty() {
+    public PeoplePage checkIncomeListIsEmpty() {
         this.incomeList.shouldBe(empty);
         return this;
     }
 
     @Step("Check income list contains {}")
-    public SearchPeoplePage checkIncomeListContainsText(String name) {
+    public PeoplePage checkIncomeListContainsText(String name) {
         this.incomeList.shouldHave(sizeGreaterThan(0));
         this.incomeList.shouldHave(anyMatch("List contains name " + name, e -> e.getText().contains(name)));
         return this;
     }
 
     @Step("Check all rows in income list contain Accept button")
-    public SearchPeoplePage checkIncomeListContainsAcceptButtons() {
+    public PeoplePage checkIncomeListContainsAcceptButtons() {
         this.acceptButtons.shouldBe(size(this.incomeList.size()));
         return this;
     }
 
     @Step("Check all rows in income list contain Decline button")
-    public SearchPeoplePage checkIncomeListContainsDeclineButtons() {
+    public PeoplePage checkIncomeListContainsDeclineButtons() {
         this.declineButtons.shouldBe(size(this.incomeList.size()));
         return this;
     }
 
     @Step("Click Decline button at first row")
-    public SearchPeoplePage clickDeclineButtonAtFirstRow() {
+    public PeoplePage clickDeclineButtonAtFirstRow() {
         this.declineButtons.first().click();
         return this;
     }
 
+    @Step("Click Accept button at row with text {}")
+    public PeoplePage clickAcceptButtonAtRowWithText(String name) {
+        this.incomeList.stream()
+                .filter(income -> income.getText().contains(name))
+                .findFirst()
+                .ifPresent(e -> e.$("td button.MuiButton-colorPrimary").click());
+        return this;
+    }
+
+    @Step("Click Decline button at row with text {}")
+    public PeoplePage clickDeclineButtonAtRowWithText(String name) {
+        this.incomeList.stream()
+                .filter(income -> income.getText().contains(name))
+                .findFirst()
+                .ifPresent(e -> e.$("td button.MuiButton-colorError").click());
+        return this;
+    }
+
     @Step("Refresh page")
-    public SearchPeoplePage refreshPage() {
+    public PeoplePage refreshPage() {
         Selenide.refresh();
         return this;
     }

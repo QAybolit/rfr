@@ -6,13 +6,13 @@ import io.student.rangiffler.data.extractor.AuthUserEntityExtractor;
 import io.student.rangiffler.data.extractor.AuthUserEntityListExtractor;
 import io.student.rangiffler.data.repository.AuthUserRepository;
 import io.student.rangiffler.data.tpl.DataSources;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +25,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     private static final Config CFG = Config.getInstance();
 
     @Override
-    public AuthUserEntity create(@NotNull AuthUserEntity user) {
+    public @Nonnull AuthUserEntity create(@Nonnull AuthUserEntity user) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         template.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -50,7 +50,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     }
 
     @Override
-    public Optional<AuthUserEntity> findById(@NotNull UUID id) {
+    public @Nonnull Optional<AuthUserEntity> findById(@Nonnull UUID id) {
         return Optional.ofNullable(
                 template.query(
                         "SELECT * FROM \"user\" WHERE id = ?",
@@ -61,7 +61,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     }
 
     @Override
-    public List<AuthUserEntity> findAll() {
+    public @Nonnull List<AuthUserEntity> findAll() {
         List<AuthUserEntity> users = template.query(
                 "SELECT * FROM \"user\"",
                 AuthUserEntityListExtractor.INSTANCE
@@ -70,7 +70,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     }
 
     @Override
-    public Optional<AuthUserEntity> findByUsername(@NotNull String username) {
+    public @Nonnull Optional<AuthUserEntity> findByUsername(@Nonnull String username) {
         return Optional.ofNullable(
                 template.query(
                         "SELECT * FROM \"user\" WHERE username = ?",

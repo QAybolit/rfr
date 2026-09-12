@@ -5,10 +5,13 @@ import io.student.rangiffler.data.entity.user.PhotoEntity;
 import io.student.rangiffler.data.entity.user.UserEntity;
 import org.springframework.jdbc.core.RowMapper;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class PhotoEntityRowMapper implements RowMapper<PhotoEntity> {
 
     public static final PhotoEntityRowMapper INSTANCE = new PhotoEntityRowMapper();
@@ -17,7 +20,7 @@ public class PhotoEntityRowMapper implements RowMapper<PhotoEntity> {
     }
 
     @Override
-    public PhotoEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+    public @Nonnull PhotoEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
         PhotoEntity result = new PhotoEntity();
         result.setId(rs.getObject("id", UUID.class));
         result.setDescription(rs.getString("description"));

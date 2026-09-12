@@ -5,8 +5,8 @@ import io.student.rangiffler.data.entity.user.CountryEntity;
 import io.student.rangiffler.data.entity.user.FriendshipStatus;
 import io.student.rangiffler.data.entity.user.UserEntity;
 import io.student.rangiffler.data.repository.UserRepository;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,7 +24,7 @@ public class UserRepositoryJdbc implements UserRepository {
     private static final Config CFG = Config.getInstance();
 
     @Override
-    public UserEntity createUser(@NotNull UserEntity user) {
+    public @Nonnull UserEntity createUser(@Nonnull UserEntity user) {
         try (PreparedStatement ps = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO \"user\" (username, firstname, last_name, avatar, country_id)" +
                         " VALUES (?, ?, ?, ?, ?)",
@@ -55,7 +55,7 @@ public class UserRepositoryJdbc implements UserRepository {
     }
 
     @Override
-    public UserEntity updateUser(@NotNull UserEntity user) {
+    public @Nonnull UserEntity updateUser(@Nonnull UserEntity user) {
         try (PreparedStatement ps = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
                 "UPDATE \"user\" SET username = ?, firstname = ?, last_name = ?, avatar = ?, country_id = ?" +
                         " WHERE id = ?"
@@ -76,7 +76,7 @@ public class UserRepositoryJdbc implements UserRepository {
     }
 
     @Override
-    public Optional<UserEntity> findById(@NotNull UUID id) {
+    public @Nonnull Optional<UserEntity> findById(@Nonnull UUID id) {
         try (PreparedStatement ps = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\" u JOIN country c ON u.country_id = c.id WHERE u.id = ?"
         )) {
@@ -100,7 +100,7 @@ public class UserRepositoryJdbc implements UserRepository {
     }
 
     @Override
-    public Optional<UserEntity> findByUsername(@NotNull String username) {
+    public @Nonnull Optional<UserEntity> findByUsername(@Nonnull String username) {
         try (PreparedStatement ps = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\" u JOIN country c ON u.country_id = c.id WHERE u.username = ?"
         )) {
@@ -124,7 +124,7 @@ public class UserRepositoryJdbc implements UserRepository {
     }
 
     @Override
-    public List<UserEntity> findAll() {
+    public @Nonnull List<UserEntity> findAll() {
         List<UserEntity> users = new ArrayList<>();
         try (PreparedStatement ps = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\""
@@ -144,7 +144,7 @@ public class UserRepositoryJdbc implements UserRepository {
     }
 
     @Override
-    public void addFriendshipRequest(@NotNull UserEntity requester, @NotNull UserEntity addressee) {
+    public void addFriendshipRequest(@Nonnull UserEntity requester, @Nonnull UserEntity addressee) {
         try (PreparedStatement ps = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO friendship (requester_id, addressee_id, created_date, status)" +
                         " VALUES (?, ?, ?, ?)"
@@ -161,7 +161,7 @@ public class UserRepositoryJdbc implements UserRepository {
     }
 
     @Override
-    public void addFriend(@NotNull UserEntity requester, @NotNull UserEntity addressee) {
+    public void addFriend(@Nonnull UserEntity requester, @Nonnull UserEntity addressee) {
         try (PreparedStatement checkPs = holder(CFG.apiJdbcUrl()).connection().prepareStatement(
                 "SELECT COUNT(*) AS total FROM friendship" +
                         " WHERE requester_id = ? AND addressee_id = ? OR requester_id = ? AND addressee_id = ?");
@@ -193,7 +193,7 @@ public class UserRepositoryJdbc implements UserRepository {
         }
     }
 
-    private UserEntity userEntity(ResultSet rs) throws SQLException {
+    private @Nonnull UserEntity userEntity(@Nonnull ResultSet rs) throws SQLException {
         UserEntity ue = new UserEntity();
         ue.setId(rs.getObject("id", UUID.class));
         ue.setUsername(rs.getString("username"));
@@ -203,7 +203,7 @@ public class UserRepositoryJdbc implements UserRepository {
         return ue;
     }
 
-    private CountryEntity countryEntity(ResultSet rs) throws SQLException {
+    private @Nonnull CountryEntity countryEntity(@Nonnull ResultSet rs) throws SQLException {
         CountryEntity ce = new CountryEntity();
         ce.setId(rs.getObject("country_id", UUID.class));
         ce.setName(rs.getString("name"));

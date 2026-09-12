@@ -2,12 +2,15 @@ package io.student.rangiffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
+import io.student.rangiffler.config.Config;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class LoginPage {
+
+    public static String URL = Config.getInstance().frontUrl() + "/login";
 
     private final SelenideElement logo = $(".header__logo");
     private final SelenideElement header = $("h1.header");
@@ -42,9 +45,9 @@ public class LoginPage {
     }
 
     @Step("Submit login form")
-    public TravelMapPage submitLoginForm() {
+    public FeedPage submitLoginForm() {
         this.submitButton.click();
-        return new TravelMapPage();
+        return new FeedPage();
     }
 
     @Step("Submit login form with bad credentials")

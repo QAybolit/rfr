@@ -9,8 +9,8 @@ import io.student.rangiffler.data.repository.PhotoRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,25 +22,25 @@ public class PhotoRepositoryHibernate implements PhotoRepository {
     private final EntityManager entityManager = EntityManagers.em(CFG.apiJdbcUrl());
 
     @Override
-    public PhotoEntity create(@NotNull PhotoEntity photo) {
+    public @Nonnull PhotoEntity create(@Nonnull PhotoEntity photo) {
         entityManager.joinTransaction();
         entityManager.persist(photo);
         return photo;
     }
 
     @Override
-    public PhotoEntity update(@NotNull PhotoEntity photo) {
+    public @Nonnull PhotoEntity update(@Nonnull PhotoEntity photo) {
         entityManager.joinTransaction();
         return entityManager.merge(photo);
     }
 
     @Override
-    public Optional<PhotoEntity> findById(@NotNull UUID id) {
+    public @Nonnull Optional<PhotoEntity> findById(@Nonnull UUID id) {
         return Optional.ofNullable(entityManager.find(PhotoEntity.class, id));
     }
 
     @Override
-    public Optional<PhotoEntity> findByUsernameAndDescription(@NotNull String username, @NotNull String description) {
+    public @Nonnull Optional<PhotoEntity> findByUsernameAndDescription(@Nonnull String username, @Nonnull String description) {
         try {
             return Optional.of(entityManager.createQuery("select p from PhotoEntity p join p.user u where u.username = :username and p.description = :description",
                             PhotoEntity.class)
@@ -53,7 +53,7 @@ public class PhotoRepositoryHibernate implements PhotoRepository {
     }
 
     @Override
-    public Optional<PhotoEntity> findByUsernameAndCountry(@NotNull String username, @NotNull String code) {
+    public @Nonnull Optional<PhotoEntity> findByUsernameAndCountry(@Nonnull String username, @Nonnull String code) {
         try {
             return Optional.of(entityManager.createQuery("select p from PhotoEntity p join p.user u join p.country c where u.username = :username and c.code = :code",
                             PhotoEntity.class)
@@ -66,20 +66,20 @@ public class PhotoRepositoryHibernate implements PhotoRepository {
     }
 
     @Override
-    public List<PhotoEntity> findAllUserPhotos(@NotNull String username) {
+    public @Nonnull List<PhotoEntity> findAllUserPhotos(@Nonnull String username) {
         return entityManager.createQuery("select p from PhotoEntity p join p.user u where u.username = :username", PhotoEntity.class)
                 .setParameter("username", username)
                 .getResultList();
     }
 
     @Override
-    public void remove(@NotNull PhotoEntity photo) {
+    public void remove(@Nonnull PhotoEntity photo) {
         entityManager.joinTransaction();
         entityManager.remove(photo);
     }
 
     @Override
-    public void addLike(@NotNull UUID photoId, @NotNull UUID userId) {
+    public void addLike(@Nonnull UUID photoId, @Nonnull UUID userId) {
         entityManager.joinTransaction();
         PhotoEntity photo = entityManager.find(PhotoEntity.class, photoId);
         UserEntity user = entityManager.find(UserEntity.class, userId);
@@ -91,7 +91,7 @@ public class PhotoRepositoryHibernate implements PhotoRepository {
     }
 
     @Override
-    public void removeLike(@NotNull UUID photoId, @NotNull UUID likeId) {
+    public void removeLike(@Nonnull UUID photoId, @Nonnull UUID likeId) {
         entityManager.joinTransaction();
         PhotoEntity photo = entityManager.find(PhotoEntity.class, photoId);
         LikeEntity like = entityManager.find(LikeEntity.class, likeId);

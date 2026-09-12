@@ -7,12 +7,15 @@ import io.student.rangiffler.data.entity.user.UserEntity;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@ParametersAreNonnullByDefault
 public class PhotoEntityExtractor implements ResultSetExtractor<PhotoEntity> {
 
     public static final PhotoEntityExtractor INSTANCE = new PhotoEntityExtractor();
@@ -21,7 +24,7 @@ public class PhotoEntityExtractor implements ResultSetExtractor<PhotoEntity> {
     }
 
     @Override
-    public PhotoEntity extractData(ResultSet rs) throws SQLException, DataAccessException {
+    public @Nonnull PhotoEntity extractData(ResultSet rs) throws SQLException, DataAccessException {
         Map<UUID, PhotoEntity> photoMap = new ConcurrentHashMap<>();
         UUID photoId = null;
         while (rs.next()) {
