@@ -9,13 +9,12 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$$;
 
-public class SelectField {
+public class SelectField extends BaseComponent<SelectField> {
 
-    private final SelenideElement self;
     private final ElementsCollection options = $$("li[role='option']");
 
     public SelectField(SelenideElement self) {
-        this.self = self;
+        super(self);
     }
 
     @Step("Select option with text {text} from dropdown")

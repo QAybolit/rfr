@@ -7,7 +7,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
-public class SuccessRegistrationPage {
+public class SuccessRegistrationPage extends BasePage<RegistrationPage> {
 
     private final SelenideElement logo = $(".header__logo");
     private final SelenideElement header = $("h1.header");

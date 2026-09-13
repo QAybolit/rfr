@@ -5,6 +5,8 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import io.student.rangiffler.config.Config;
+import io.student.rangiffler.page.component.HeaderComponent;
+import io.student.rangiffler.page.component.MenuComponent;
 
 import static com.codeborne.selenide.CollectionCondition.anyMatch;
 import static com.codeborne.selenide.CollectionCondition.empty;
@@ -16,7 +18,7 @@ import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.$$x;
 import static com.codeborne.selenide.Selenide.$x;
 
-public class PeoplePage extends BasePage {
+public class PeoplePage extends BasePage<PeoplePage> {
 
     public static String URL = Config.getInstance().frontUrl() + "/people";
 
@@ -34,6 +36,9 @@ public class PeoplePage extends BasePage {
     private final ElementsCollection incomeList = $$("#simple-tabpanel-income tbody tr");
     private final ElementsCollection acceptButtons = $$x("//td/button[text()='Accept']");
     private final ElementsCollection declineButtons = $$x("//td/button[text()='Decline']");
+
+    private final MenuComponent menu = new MenuComponent();
+    private final HeaderComponent header = new HeaderComponent();
 
     @Step("Find person with name {}")
     public PeoplePage findPerson(String name) {
@@ -160,5 +165,11 @@ public class PeoplePage extends BasePage {
     public PeoplePage refreshPage() {
         Selenide.refresh();
         return this;
+    }
+
+    @Step("Log out")
+    public EnterPage logOut() {
+        this.header.clickLogoutButton();
+        return new EnterPage();
     }
 }

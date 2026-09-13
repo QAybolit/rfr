@@ -6,17 +6,14 @@ import io.qameta.allure.Step;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
-public class HeaderComponent {
-
-    private final SelenideElement self = $("body header");
+public class HeaderComponent extends BaseComponent<HeaderComponent> {
 
     private final SelenideElement logoutButton = self.$("[aria-label='Logout']");
     private final SelenideElement header = self.$("h1");
     private final SelenideElement menuButton = self.$("button[aria-label='open drawer']");
 
-    @Step("Click logout button")
-    public void clickLogoutButton() {
-        this.logoutButton.click();
+    public HeaderComponent() {
+        super($("body header"));
     }
 
     @Step("Check the header is visible")
@@ -24,5 +21,10 @@ public class HeaderComponent {
         this.header.shouldBe(visible);
         this.menuButton.shouldBe(visible);
         this.logoutButton.shouldBe(visible);
+    }
+
+    @Step("Click logout button")
+    public void clickLogoutButton() {
+        this.logoutButton.click();
     }
 }

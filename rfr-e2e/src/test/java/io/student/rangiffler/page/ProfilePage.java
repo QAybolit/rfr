@@ -3,6 +3,8 @@ package io.student.rangiffler.page;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import io.student.rangiffler.config.Config;
+import io.student.rangiffler.page.component.HeaderComponent;
+import io.student.rangiffler.page.component.MenuComponent;
 import io.student.rangiffler.page.component.SelectField;
 
 import static com.codeborne.selenide.Condition.text;
@@ -11,7 +13,7 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
-public class ProfilePage extends BasePage {
+public class ProfilePage extends BasePage<ProfilePage> {
 
     public static String URL = Config.getInstance().frontUrl() + "/profile";
 
@@ -24,6 +26,8 @@ public class ProfilePage extends BasePage {
     private final SelenideElement surnameInput = $("input#surname");
     private final SelenideElement usernameInput = $("input#username");
 
+    private final HeaderComponent header = new HeaderComponent();
+    private final MenuComponent menu = new MenuComponent();
     private final SelectField locationDropdown = new SelectField($("div#location"));
 
     @Step("Validate Profile Page elements")
@@ -74,6 +78,5 @@ public class ProfilePage extends BasePage {
         this.locationDropdown.selectOptionFromDropdownByText(location);
         return this;
     }
-
 
 }

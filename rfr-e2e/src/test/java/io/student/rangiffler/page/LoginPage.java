@@ -8,7 +8,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
-public class LoginPage {
+public class LoginPage extends BasePage<LoginPage> {
 
     public static String URL = Config.getInstance().frontUrl() + "/login";
 

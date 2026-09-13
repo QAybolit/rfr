@@ -32,7 +32,7 @@ public class ProfileTest {
                 .enterPassword(user.testData().password())
                 .submitLoginForm()
                 .validateFeedPage()
-                .clickProfileMenuButton()
+                .goToProfilePage()
                 .validateProfilePage()
                 .changeFirstName(name)
                 .changeSurname(surname)
